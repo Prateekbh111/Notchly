@@ -18,7 +18,7 @@ struct NotchView: View {
             if phase != .idle {
                 VStack(spacing: 0) {
                     content
-                        .background(NotchBackground(cornerRadius: 18))
+                        .background(NotchBackground(cornerRadius: 22))
                         .onHover { isHovered in
                             if !isHovered {
                                 hover.setHovered(false)

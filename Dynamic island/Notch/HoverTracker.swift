@@ -10,7 +10,10 @@ final class HoverTracker: ObservableObject {
         if hovered {
             pendingFalse?.cancel()
             pendingFalse = nil
-            if !isHovered { isHovered = true }
+            if !isHovered {
+                isHovered = true
+                NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .now)
+            }
         } else {
             pendingFalse?.cancel()
             let work = DispatchWorkItem { [weak self] in

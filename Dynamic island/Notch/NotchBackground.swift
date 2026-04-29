@@ -5,10 +5,10 @@ struct NotchBackground: View {
     let cornerRadius: CGFloat
 
     var body: some View {
-        NotchShape(cornerRadius: cornerRadius)
+        NotchShape(cornerRadius: cornerRadius, topCornerRadius: 10)
             .fill(.black.opacity(0.92))
             .overlay(
-                NotchShape(cornerRadius: cornerRadius)
+                NotchShape(cornerRadius: cornerRadius, topCornerRadius: 10)
                     .stroke(Color.white.opacity(0.05), lineWidth: 0.5)
             )
             .shadow(color: .black.opacity(0.4), radius: 20, x: 0, y: 8)
