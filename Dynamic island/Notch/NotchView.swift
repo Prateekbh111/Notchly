@@ -14,20 +14,18 @@ struct NotchView: View {
 
     var body: some View {
         ZStack(alignment: .top) {
-            // Full-bounds exit detector
-            Color.clear
-                .contentShape(Rectangle())
-                .onHover { isHovered in
-                    if !isHovered {
-                        hover.setHovered(false)
-                    }
-                }
-
-            // Visible notch content — only when not idle
+            // Visible card — present only when not idle. The card itself detects hover exit.
             if phase != .idle {
                 VStack(spacing: 0) {
                     content
                         .background(NotchBackground(cornerRadius: 18))
+                        .onHover { isHovered in
+                            if !isHovered {
+                                hover.setHovered(false)
+                            } else {
+                                hover.setHovered(true)
+                            }
+                        }
                     Spacer(minLength: 0)
                 }
                 .transition(.asymmetric(
@@ -36,7 +34,7 @@ struct NotchView: View {
                 ))
             }
 
-            // Entry hotspot — small zone around the notch
+            // Entry hotspot — small zone at the top of the panel around the physical notch.
             Color.clear
                 .frame(width: notchHotspotWidth, height: 35)
                 .contentShape(Rectangle())
