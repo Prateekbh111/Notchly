@@ -9,7 +9,7 @@ struct NotchBackground: View {
             .fill(.black.opacity(0.92))
             .overlay(
                 NotchShape(cornerRadius: cornerRadius, topCornerRadius: 10)
-                    .stroke(Color.white.opacity(0.05), lineWidth: 0.5)
+                    .stroke(Color.white.opacity(0.18), lineWidth: 0.8)
             )
             .shadow(color: .black.opacity(0.4), radius: 20, x: 0, y: 8)
     }

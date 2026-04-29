@@ -36,19 +36,25 @@ final class NotchWindowController {
         let frame = computeFrame(for: screen)
         let panel = NotchPanel(contentRect: frame)
 
-        let notchHotspotWidth: CGFloat = {
+        let notchSize: CGSize = {
             if let leftMaxX = screen.auxiliaryTopLeftArea?.maxX,
-               let rightMinX = screen.auxiliaryTopRightArea?.minX {
-                return (rightMinX - leftMaxX) + 40
+               let rightMinX = screen.auxiliaryTopRightArea?.minX,
+               let topInset = screen.safeAreaInsets.top as CGFloat? {
+                let width = rightMinX - leftMaxX
+                let height = max(topInset, 32)
+                return CGSize(width: width, height: height)
             }
-            return 240
+            return CGSize(width: 200, height: 32)
         }()
+
+        let notchHotspotWidth: CGFloat = notchSize.width + 40
 
         let root = NotchView(
             nowPlaying: nowPlaying,
             transport: transport,
             hover: hover,
-            notchHotspotWidth: notchHotspotWidth
+            notchHotspotWidth: notchHotspotWidth,
+            notchSize: notchSize
         )
 
         let host = NSHostingView(rootView: root)

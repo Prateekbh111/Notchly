@@ -6,6 +6,7 @@ struct NotchView: View {
     let transport: TransportController
     @ObservedObject var hover: HoverTracker
     let notchHotspotWidth: CGFloat
+    let notchSize: CGSize
     @Namespace private var artNamespace
 
     private var phase: Phase {
@@ -15,9 +16,9 @@ struct NotchView: View {
     private var shapeSize: CGSize {
         switch phase {
         case .idle:
-            return CGSize(width: max(notchHotspotWidth - 40, 200), height: 35)
+            return notchSize
         case .compact:
-            return CGSize(width: 280, height: 36)
+            return CGSize(width: 280, height: max(notchSize.height + 4, 36))
         case .expanded:
             return CGSize(width: 380, height: 180)
         }
@@ -28,7 +29,7 @@ struct NotchView: View {
             // The morphing shape — always present, frame animated by phase.
             VStack(spacing: 0) {
                 ZStack {
-                    NotchBackground(cornerRadius: phase == .expanded ? 26 : 18)
+                    NotchBackground(cornerRadius: phase == .expanded ? 26 : (phase == .compact ? 18 : notchSize.height / 2))
                     content
                         .opacity(phase == .idle ? 0 : 1)
                 }
