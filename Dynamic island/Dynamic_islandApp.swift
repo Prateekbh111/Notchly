@@ -1,17 +1,11 @@
-//
-//  Dynamic_islandApp.swift
-//  Dynamic island
-//
-//  Created by Prateek Bhardwaj on 29/04/26.
-//
-
 import SwiftUI
+import AppKit
 
 @main
 struct Dynamic_islandApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+
     var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
+        Settings { EmptyView() }
     }
 }
