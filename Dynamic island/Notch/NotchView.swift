@@ -16,9 +16,9 @@ struct NotchView: View {
     private var shapeSize: CGSize {
         switch phase {
         case .idle:
-            return CGSize(width: notchSize.width, height: 0.1) // effectively invisible
+            return CGSize(width: notchSize.width, height: 0.1)
         case .compact:
-            return CGSize(width: 280, height: 36)
+            return CGSize(width: 200, height: 30)
         case .expanded:
             return CGSize(width: 380, height: 180)
         }
@@ -26,9 +26,9 @@ struct NotchView: View {
 
     private var cornerRadii: (top: CGFloat, bottom: CGFloat) {
         switch phase {
-        case .idle: return (4, 4)
-        case .compact: return (8, 22)
-        case .expanded: return (10, 32)
+        case .idle: return (0, 0)
+        case .compact: return (4, 8)
+        case .expanded: return (8, 32)
         }
     }
 
