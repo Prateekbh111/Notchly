@@ -22,6 +22,7 @@ final class RealMediaRemoteBridge: MediaRemoteBridge, @unchecked Sendable {
 
     func start() {
         let path = "/System/Library/PrivateFrameworks/MediaRemote.framework/MediaRemote"
+        NSLog("[MR] bridge starting, dlopen path=%@", path)
         guard let handle = dlopen(path, RTLD_NOW) else { return }
         self.handle = handle
 
@@ -35,6 +36,13 @@ final class RealMediaRemoteBridge: MediaRemoteBridge, @unchecked Sendable {
             setCanBeNowPlaying = unsafeBitCast(sym, to: SetCanBeNowPlayingFn.self)
             setCanBeNowPlaying?(false)
         }
+
+        NSLog("[MR] dlopen handle=0x%lx, getInfo=%@, sendCommand=%@, register=%@, setCanBe=%@",
+              UInt(bitPattern: handle),
+              getInfo == nil ? "nil" : "ok",
+              sendCommand == nil ? "nil" : "ok",
+              registerForNotifications == nil ? "nil" : "ok",
+              setCanBeNowPlaying == nil ? "nil" : "ok")
 
         if let sym = dlsym(handle, "MRMediaRemoteRegisterForNowPlayingNotifications") {
             registerForNotifications = unsafeBitCast(sym, to: RegisterFn.self)
@@ -75,6 +83,7 @@ final class RealMediaRemoteBridge: MediaRemoteBridge, @unchecked Sendable {
     }
 
     func stop() {
+        NSLog("[MR] bridge stopping")
         pollTimer?.invalidate()
         pollTimer = nil
         DistributedNotificationCenter.default().removeObserver(self)
@@ -89,10 +98,22 @@ final class RealMediaRemoteBridge: MediaRemoteBridge, @unchecked Sendable {
 
     private func fetchAndPublish() {
         guard let getInfo else {
+            NSLog("[MR] getInfo function unavailable, publishing empty")
             onChange?(.empty)
             return
         }
         getInfo(.main) { [weak self] info in
+            // Log all keys + scalar values
+            NSLog("[MR] callback fired, info keys: %@", info.keys.sorted().joined(separator: ", "))
+            for (key, value) in info.sorted(by: { $0.key < $1.key }) {
+                if key == "kMRMediaRemoteNowPlayingInfoArtworkData",
+                   let data = value as? Data {
+                    NSLog("[MR]   %@ = <Data %d bytes>", key, data.count)
+                } else {
+                    NSLog("[MR]   %@ = %@", key, String(describing: value))
+                }
+            }
+
             let title = info["kMRMediaRemoteNowPlayingInfoTitle"] as? String
             let artist = info["kMRMediaRemoteNowPlayingInfoArtist"] as? String
             let album = info["kMRMediaRemoteNowPlayingInfoAlbum"] as? String
@@ -101,10 +122,18 @@ final class RealMediaRemoteBridge: MediaRemoteBridge, @unchecked Sendable {
             let rate = info["kMRMediaRemoteNowPlayingInfoPlaybackRate"] as? Double ?? 0
             let artwork = info["kMRMediaRemoteNowPlayingInfoArtworkData"] as? Data
 
+            // More permissive: accept if any of title / artist / album non-empty
+            let displayTitle: String? = {
+                if let t = title, !t.isEmpty { return t }
+                if let a = artist, !a.isEmpty { return a }
+                if let al = album, !al.isEmpty { return al }
+                return nil
+            }()
+
             let track: Track? = {
-                guard let title, !title.isEmpty else { return nil }
+                guard let displayTitle else { return nil }
                 return Track(
-                    title: title,
+                    title: displayTitle,
                     artist: artist ?? "",
                     album: album,
                     artwork: artwork,
@@ -113,6 +142,10 @@ final class RealMediaRemoteBridge: MediaRemoteBridge, @unchecked Sendable {
             }()
 
             let snapshot = NowPlayingSnapshot(track: track, isPlaying: rate > 0, elapsed: elapsed)
+            NSLog("[MR] resolved: title=%@ artist=%@ album=%@ duration=%.1f elapsed=%.1f rate=%.2f track=%@",
+                  title ?? "nil", artist ?? "nil", album ?? "nil",
+                  duration, elapsed, rate,
+                  track == nil ? "nil" : "non-nil")
             self?.onChange?(snapshot)
         }
     }
