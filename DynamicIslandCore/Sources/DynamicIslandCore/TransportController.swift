@@ -7,8 +7,8 @@ public final class TransportController: Sendable {
         self.bridge = bridge
     }
 
-    public func playPause() { bridge.send(.togglePlayPause) }
-    public func next() { bridge.send(.next) }
-    public func previous() { bridge.send(.previous) }
-    public func toggleShuffle() { bridge.send(.toggleShuffle) }
+    @discardableResult public func playPause() -> Bool { bridge.send(.togglePlayPause) }
+    @discardableResult public func next() -> Bool { bridge.send(.next) }
+    @discardableResult public func previous() -> Bool { bridge.send(.previous) }
+    @discardableResult public func toggleShuffle() -> Bool { bridge.send(.toggleShuffle) }
 }

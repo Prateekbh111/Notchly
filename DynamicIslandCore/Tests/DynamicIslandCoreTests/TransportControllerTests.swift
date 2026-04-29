@@ -17,4 +17,11 @@ final class TransportControllerTests: XCTestCase {
         controller.toggleShuffle()
         XCTAssertEqual(bridge.sentCommands, [.next, .previous, .toggleShuffle])
     }
+
+    func test_playPauseReturnsBridgeBool() {
+        let bridge = FakeBridge()
+        let controller = TransportController(bridge: bridge)
+        let result = controller.playPause()
+        XCTAssertTrue(result)
+    }
 }
