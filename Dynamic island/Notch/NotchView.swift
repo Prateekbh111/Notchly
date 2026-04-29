@@ -35,10 +35,6 @@ struct NotchView: View {
     var body: some View {
         ZStack(alignment: .top) {
             VStack(spacing: 0) {
-                // Spacer pushes the shape down by the notch height — the shape sits flush BELOW the physical notch.
-                Color.clear
-                    .frame(height: notchSize.height)
-
                 ZStack {
                     NotchBackground(
                         cornerRadius: cornerRadii.bottom,
