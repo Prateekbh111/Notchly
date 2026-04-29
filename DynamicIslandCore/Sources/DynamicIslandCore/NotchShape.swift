@@ -4,7 +4,7 @@ public struct NotchShape: Shape, Sendable {
     public var cornerRadius: CGFloat
     public var topCornerRadius: CGFloat
 
-    public init(cornerRadius: CGFloat = 22, topCornerRadius: CGFloat = 10) {
+    public init(cornerRadius: CGFloat = 32, topCornerRadius: CGFloat = 28) {
         self.cornerRadius = cornerRadius
         self.topCornerRadius = topCornerRadius
     }

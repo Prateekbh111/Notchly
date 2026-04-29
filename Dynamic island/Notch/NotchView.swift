@@ -13,6 +13,14 @@ struct NotchView: View {
         PhaseReducer.reduce(hovered: hover.isHovered, hasMedia: nowPlaying.hasMedia)
     }
 
+    private var cornerRadii: (corner: CGFloat, top: CGFloat) {
+        switch phase {
+        case .idle:     return (notchSize.height / 2, min(8, notchSize.height / 2))
+        case .compact:  return (22, 12)
+        case .expanded: return (32, 28)
+        }
+    }
+
     private var shapeSize: CGSize {
         switch phase {
         case .idle:
@@ -29,7 +37,10 @@ struct NotchView: View {
             // The morphing shape — always present, frame animated by phase.
             VStack(spacing: 0) {
                 ZStack {
-                    NotchBackground(cornerRadius: phase == .expanded ? 26 : (phase == .compact ? 18 : notchSize.height / 2))
+                    NotchBackground(
+                        cornerRadius: cornerRadii.corner,
+                        topCornerRadius: cornerRadii.top
+                    )
                     content
                         .opacity(phase == .idle ? 0 : 1)
                 }
