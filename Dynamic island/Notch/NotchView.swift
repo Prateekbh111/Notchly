@@ -12,29 +12,38 @@ struct NotchView: View {
         PhaseReducer.reduce(hovered: hover.isHovered, hasMedia: nowPlaying.hasMedia)
     }
 
+    private var shapeSize: CGSize {
+        switch phase {
+        case .idle:
+            return CGSize(width: max(notchHotspotWidth - 40, 200), height: 35)
+        case .compact:
+            return CGSize(width: 280, height: 36)
+        case .expanded:
+            return CGSize(width: 380, height: 180)
+        }
+    }
+
     var body: some View {
         ZStack(alignment: .top) {
-            // Visible card — present only when not idle. The card itself detects hover exit.
-            if phase != .idle {
-                VStack(spacing: 0) {
+            // The morphing shape — always present, frame animated by phase.
+            VStack(spacing: 0) {
+                ZStack {
+                    NotchBackground(cornerRadius: phase == .expanded ? 26 : 18)
                     content
-                        .background(NotchBackground(cornerRadius: 22))
-                        .onHover { isHovered in
-                            if !isHovered {
-                                hover.setHovered(false)
-                            } else {
-                                hover.setHovered(true)
-                            }
-                        }
-                    Spacer(minLength: 0)
+                        .opacity(phase == .idle ? 0 : 1)
                 }
-                .transition(.asymmetric(
-                    insertion: .scale(scale: 0.05, anchor: .top).combined(with: .opacity),
-                    removal: .scale(scale: 0.05, anchor: .top).combined(with: .opacity)
-                ))
+                .frame(width: shapeSize.width, height: shapeSize.height)
+                Spacer(minLength: 0)
+            }
+            .onHover { isHovered in
+                if isHovered {
+                    hover.setHovered(true)
+                } else {
+                    hover.setHovered(false)
+                }
             }
 
-            // Entry hotspot — small zone at the top of the panel around the physical notch.
+            // Entry hotspot — small zone around the physical notch.
             Color.clear
                 .frame(width: notchHotspotWidth, height: 35)
                 .contentShape(Rectangle())
@@ -46,26 +55,28 @@ struct NotchView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .ignoresSafeArea(.all)
-        .animation(.spring(response: 0.4, dampingFraction: 0.78), value: phase)
+        .animation(.spring(response: 0.42, dampingFraction: 0.74), value: phase)
     }
 
     @ViewBuilder
     private var content: some View {
         switch phase {
         case .idle:
-            IdlePhaseView()
+            EmptyView()
         case .compact:
             CompactPhaseView(
                 track: nowPlaying.snapshot.track,
                 isPlaying: nowPlaying.snapshot.isPlaying,
                 artNamespace: artNamespace
             )
+            .transition(.opacity)
         case .expanded:
             ExpandedPhaseView(
                 snapshot: nowPlaying.snapshot,
                 transport: transport,
                 artNamespace: artNamespace
             )
+            .transition(.opacity)
         }
     }
 }
