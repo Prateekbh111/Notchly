@@ -1,0 +1,112 @@
+client:
+  name: basic
+  file-system: device-agnostic
+tools: {}
+targets:
+  "DynamicIslandCore-arm64-apple-macosx-debug.module": ["<DynamicIslandCore-arm64-apple-macosx-debug.module>"]
+  "DynamicIslandCorePackageTests-arm64-apple-macosx-debug.module": ["<DynamicIslandCorePackageTests-arm64-apple-macosx-debug.module>"]
+  "DynamicIslandCorePackageTests-arm64-apple-macosx-debug.test": ["<DynamicIslandCorePackageTests-arm64-apple-macosx-debug.test>"]
+  "DynamicIslandCoreTests-arm64-apple-macosx-debug.module": ["<DynamicIslandCoreTests-arm64-apple-macosx-debug.module>"]
+  "PackageStructure": ["<PackageStructure>"]
+  "main": ["<DynamicIslandCore-arm64-apple-macosx-debug.module>"]
+  "test": ["<DynamicIslandCore-arm64-apple-macosx-debug.module>","<DynamicIslandCorePackageTests-arm64-apple-macosx-debug.test>","<DynamicIslandCoreTests-arm64-apple-macosx-debug.module>"]
+default: "main"
+nodes:
+  "/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/Sources/DynamicIslandCore/":
+    is-directory-structure: true
+    content-exclusion-patterns: [".git",".build"]
+  "/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/Tests/DynamicIslandCoreTests/":
+    is-directory-structure: true
+    content-exclusion-patterns: [".git",".build"]
+commands:
+  "/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCore.build/sources":
+    tool: write-auxiliary-file
+    inputs: ["<sources-file-list>","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/Sources/DynamicIslandCore/Placeholder.swift"]
+    outputs: ["/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCore.build/sources"]
+    description: "Write auxiliary file /Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCore.build/sources"
+
+  "/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCorePackageTests.build/sources":
+    tool: write-auxiliary-file
+    inputs: ["<sources-file-list>","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCorePackageTests.derived/runner.swift"]
+    outputs: ["/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCorePackageTests.build/sources"]
+    description: "Write auxiliary file /Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCorePackageTests.build/sources"
+
+  "/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCorePackageTests.derived/runner.swift":
+    tool: test-entry-point-tool
+    inputs: []
+    outputs: ["/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCorePackageTests.derived/runner.swift"]
+
+  "/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCorePackageTests.product/Objects.LinkFileList":
+    tool: write-auxiliary-file
+    inputs: ["<link-file-list>","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCore.build/Placeholder.swift.o","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCorePackageTests.build/runner.swift.o","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCoreTests.build/PlaceholderTests.swift.o"]
+    outputs: ["/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCorePackageTests.product/Objects.LinkFileList"]
+    description: "Write auxiliary file /Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCorePackageTests.product/Objects.LinkFileList"
+
+  "/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCoreTests.build/sources":
+    tool: write-auxiliary-file
+    inputs: ["<sources-file-list>","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/Tests/DynamicIslandCoreTests/PlaceholderTests.swift"]
+    outputs: ["/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCoreTests.build/sources"]
+    description: "Write auxiliary file /Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCoreTests.build/sources"
+
+  "/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt":
+    tool: write-auxiliary-file
+    inputs: ["<swift-get-version>","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"]
+    outputs: ["/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"]
+    always-out-of-date: "true"
+    description: "Write auxiliary file /Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+
+  "<DynamicIslandCore-arm64-apple-macosx-debug.module>":
+    tool: phony
+    inputs: ["/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCore.build/Placeholder.swift.o","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/Modules/DynamicIslandCore.swiftmodule"]
+    outputs: ["<DynamicIslandCore-arm64-apple-macosx-debug.module>"]
+
+  "<DynamicIslandCorePackageTests-arm64-apple-macosx-debug.module>":
+    tool: phony
+    inputs: ["/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCorePackageTests.build/runner.swift.o","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/Modules/DynamicIslandCorePackageTests.swiftmodule"]
+    outputs: ["<DynamicIslandCorePackageTests-arm64-apple-macosx-debug.module>"]
+
+  "<DynamicIslandCorePackageTests-arm64-apple-macosx-debug.test>":
+    tool: phony
+    inputs: ["/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCorePackageTests.xctest/Contents/MacOS/DynamicIslandCorePackageTests"]
+    outputs: ["<DynamicIslandCorePackageTests-arm64-apple-macosx-debug.test>"]
+
+  "<DynamicIslandCoreTests-arm64-apple-macosx-debug.module>":
+    tool: phony
+    inputs: ["/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCoreTests.build/PlaceholderTests.swift.o","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/Modules/DynamicIslandCoreTests.swiftmodule"]
+    outputs: ["<DynamicIslandCoreTests-arm64-apple-macosx-debug.module>"]
+
+  "C.DynamicIslandCore-arm64-apple-macosx-debug.module":
+    tool: shell
+    inputs: ["/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/Sources/DynamicIslandCore/Placeholder.swift","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCore.build/sources"]
+    outputs: ["/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCore.build/Placeholder.swift.o","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/Modules/DynamicIslandCore.swiftmodule"]
+    description: "Compiling Swift Module 'DynamicIslandCore' (1 sources)"
+    args: ["/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc","-module-name","DynamicIslandCore","-emit-dependencies","-emit-module","-emit-module-path","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/Modules/DynamicIslandCore.swiftmodule","-output-file-map","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCore.build/output-file-map.json","-parse-as-library","-incremental","-c","@/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCore.build/sources","-I","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/Modules","-target","arm64-apple-macosx14.0","-incremental","-enable-batch-mode","-serialize-diagnostics","-index-store-path","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/index/store","-Onone","-enable-testing","-j15","-DSWIFT_PACKAGE","-DDEBUG","-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE","-module-cache-path","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/ModuleCache","-parseable-output","-parse-as-library","-emit-objc-header","-emit-objc-header-path","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCore.build/include/DynamicIslandCore-Swift.h","-swift-version","5","-plugin-path","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing","-sdk","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-I","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-L","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-g","-Xcc","-isysroot","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk","-Xcc","-F","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-Xcc","-fPIC","-Xcc","-g","-package-name","dynamicislandcore"]
+
+  "C.DynamicIslandCorePackageTests-arm64-apple-macosx-debug.module":
+    tool: shell
+    inputs: ["/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCorePackageTests.derived/runner.swift","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/Modules/DynamicIslandCoreTests.swiftmodule","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCorePackageTests.build/sources"]
+    outputs: ["/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCorePackageTests.build/runner.swift.o","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/Modules/DynamicIslandCorePackageTests.swiftmodule"]
+    description: "Compiling Swift Module 'DynamicIslandCorePackageTests' (1 sources)"
+    args: ["/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc","-module-name","DynamicIslandCorePackageTests","-emit-dependencies","-emit-module","-emit-module-path","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/Modules/DynamicIslandCorePackageTests.swiftmodule","-output-file-map","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCorePackageTests.build/output-file-map.json","-parse-as-library","-incremental","-c","@/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCorePackageTests.build/sources","-I","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/Modules","-target","arm64-apple-macosx14.0","-incremental","-enable-batch-mode","-serialize-diagnostics","-index-store-path","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/index/store","-Onone","-enable-testing","-Xfrontend","-enable-cross-import-overlays","-j15","-DSWIFT_PACKAGE","-DDEBUG","-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE","-module-cache-path","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/ModuleCache","-parseable-output","-parse-as-library","-emit-objc-header","-emit-objc-header-path","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCorePackageTests.build/include/DynamicIslandCorePackageTests-Swift.h","-plugin-path","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing","-sdk","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-I","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-L","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-g","-Xcc","-isysroot","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk","-Xcc","-F","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-Xcc","-fPIC","-Xcc","-g","-package-name","dynamicislandcore"]
+
+  "C.DynamicIslandCorePackageTests-arm64-apple-macosx-debug.test":
+    tool: shell
+    inputs: ["/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCore.build/Placeholder.swift.o","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCorePackageTests.build/runner.swift.o","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCoreTests.build/PlaceholderTests.swift.o","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCorePackageTests.product/Objects.LinkFileList"]
+    outputs: ["/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCorePackageTests.xctest/Contents/MacOS/DynamicIslandCorePackageTests"]
+    description: "Linking ./.build/arm64-apple-macosx/debug/DynamicIslandCorePackageTests.xctest/Contents/MacOS/DynamicIslandCorePackageTests"
+    args: ["/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc","-L","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug","-o","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCorePackageTests.xctest/Contents/MacOS/DynamicIslandCorePackageTests","-module-name","DynamicIslandCorePackageTests","-Xlinker","-no_warn_duplicate_libraries","-Xlinker","-bundle","-Xlinker","-rpath","-Xlinker","@loader_path/../../../","@/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCorePackageTests.product/Objects.LinkFileList","-Xlinker","-rpath","-Xlinker","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-6.2/macosx","-target","arm64-apple-macosx14.0","-Xlinker","-add_ast_path","-Xlinker","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/Modules/DynamicIslandCore.swiftmodule","-Xlinker","-add_ast_path","-Xlinker","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/Modules/DynamicIslandCorePackageTests.swiftmodule","-Xlinker","-add_ast_path","-Xlinker","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/Modules/DynamicIslandCoreTests.swiftmodule","-plugin-path","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing","-sdk","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-I","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-L","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-g"]
+
+  "C.DynamicIslandCoreTests-arm64-apple-macosx-debug.module":
+    tool: shell
+    inputs: ["/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/Tests/DynamicIslandCoreTests/PlaceholderTests.swift","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/Modules/DynamicIslandCore.swiftmodule","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCoreTests.build/sources"]
+    outputs: ["/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCoreTests.build/PlaceholderTests.swift.o","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/Modules/DynamicIslandCoreTests.swiftmodule"]
+    description: "Compiling Swift Module 'DynamicIslandCoreTests' (1 sources)"
+    args: ["/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc","-module-name","DynamicIslandCoreTests","-emit-dependencies","-emit-module","-emit-module-path","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/Modules/DynamicIslandCoreTests.swiftmodule","-output-file-map","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCoreTests.build/output-file-map.json","-parse-as-library","-incremental","-c","@/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCoreTests.build/sources","-I","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/Modules","-target","arm64-apple-macosx14.0","-incremental","-enable-batch-mode","-serialize-diagnostics","-index-store-path","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/index/store","-Onone","-enable-testing","-Xfrontend","-enable-cross-import-overlays","-j15","-DSWIFT_PACKAGE","-DDEBUG","-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE","-module-cache-path","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/ModuleCache","-parseable-output","-parse-as-library","-swift-version","5","-plugin-path","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing","-sdk","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-I","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-L","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-g","-Xcc","-isysroot","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk","-Xcc","-F","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-Xcc","-fPIC","-Xcc","-g","-package-name","dynamicislandcore"]
+
+  "PackageStructure":
+    tool: package-structure-tool
+    inputs: ["/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/Sources/DynamicIslandCore/","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/Tests/DynamicIslandCoreTests/","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/Package.swift","/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/Package.resolved"]
+    outputs: ["<PackageStructure>"]
+    description: "Planning build"
+    allow-missing-inputs: true
+

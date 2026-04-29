@@ -1,0 +1,12 @@
+{
+  "": {
+    "swift-dependencies": "/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCorePackageTests.build/primary.swiftdeps"
+  },
+  "/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCorePackageTests.derived/runner.swift": {
+    "dependencies": "/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCorePackageTests.build/runner.d",
+    "object": "/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCorePackageTests.build/runner.swift.o",
+    "swiftmodule": "/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCorePackageTests.build/runner~partial.swiftmodule",
+    "swift-dependencies": "/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCorePackageTests.build/runner.swiftdeps",
+    "diagnostics": "/Users/prateekbhardwaj/Developer/personal/Dynamic island/DynamicIslandCore/.build/arm64-apple-macosx/debug/DynamicIslandCorePackageTests.build/runner.dia"
+  }
+}
