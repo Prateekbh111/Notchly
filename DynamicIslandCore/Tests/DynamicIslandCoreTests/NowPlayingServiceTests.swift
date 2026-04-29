@@ -10,7 +10,7 @@ final class FakeBridge: MediaRemoteBridge, @unchecked Sendable {
 
     func start() { started = true }
     func stop() { stopped = true }
-    func send(_ command: MediaCommand) { sentCommands.append(command) }
+    func send(_ command: MediaCommand) -> Bool { sentCommands.append(command); return true }
 
     func emit(_ snapshot: NowPlayingSnapshot) {
         onChange?(snapshot)

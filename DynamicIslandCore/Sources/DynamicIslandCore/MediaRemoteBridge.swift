@@ -27,5 +27,6 @@ public protocol MediaRemoteBridge: AnyObject, Sendable {
     var onChange: (@Sendable (NowPlayingSnapshot) -> Void)? { get set }
     func start()
     func stop()
-    func send(_ command: MediaCommand)
+    @discardableResult
+    func send(_ command: MediaCommand) -> Bool
 }
