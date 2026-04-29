@@ -92,8 +92,12 @@ final class RealMediaRemoteBridge: MediaRemoteBridge, @unchecked Sendable {
         handle = nil
     }
 
-    func send(_ command: MediaCommand) {
-        _ = sendCommand?(command.rawValue, nil)
+    func send(_ command: MediaCommand) -> Bool {
+        let result = sendCommand?(command.rawValue, nil) ?? false
+        if !result {
+            NSLog("[MR] send(%d) returned false (no active client?)", command.rawValue)
+        }
+        return result
     }
 
     private func fetchAndPublish() {

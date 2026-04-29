@@ -32,17 +32,17 @@ struct ExpandedPhaseView: View {
             ScrubberView(elapsed: snapshot.elapsed, duration: snapshot.track?.duration ?? 0)
 
             HStack(spacing: 24) {
-                Button(action: transport.toggleShuffle) {
+                Button(action: { transport.toggleShuffle() }) {
                     Image(systemName: "shuffle")
                 }
-                Button(action: transport.previous) {
+                Button(action: { transport.previous() }) {
                     Image(systemName: "backward.fill")
                 }
-                Button(action: transport.playPause) {
+                Button(action: { transport.playPause() }) {
                     Image(systemName: snapshot.isPlaying ? "pause.fill" : "play.fill")
                         .font(.system(size: 22))
                 }
-                Button(action: transport.next) {
+                Button(action: { transport.next() }) {
                     Image(systemName: "forward.fill")
                 }
                 Button(action: {}) {
