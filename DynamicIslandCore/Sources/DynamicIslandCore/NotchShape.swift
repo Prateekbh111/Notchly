@@ -18,10 +18,10 @@ public struct NotchShape: Shape, Sendable {
         path.move(to: CGPoint(x: rect.minX + tr, y: rect.minY))
         path.addLine(to: CGPoint(x: rect.maxX - tr, y: rect.minY))
 
-        // Concave top-right corner: curve OUT-and-DOWN with control at the outer corner
+        // Concave top-right corner: control at INNER point so curve dents into the shape
         path.addQuadCurve(
             to: CGPoint(x: rect.maxX, y: rect.minY + tr),
-            control: CGPoint(x: rect.maxX, y: rect.minY)
+            control: CGPoint(x: rect.maxX - tr, y: rect.minY + tr)
         )
 
         // Right side down to bottom-right corner
@@ -45,10 +45,10 @@ public struct NotchShape: Shape, Sendable {
         // Left side up
         path.addLine(to: CGPoint(x: rect.minX, y: rect.minY + tr))
 
-        // Concave top-left corner: curve OUT-and-UP with control at the outer corner
+        // Concave top-left corner: control at INNER point so curve dents into the shape
         path.addQuadCurve(
             to: CGPoint(x: rect.minX + tr, y: rect.minY),
-            control: CGPoint(x: rect.minX, y: rect.minY)
+            control: CGPoint(x: rect.minX + tr, y: rect.minY + tr)
         )
 
         path.closeSubpath()
