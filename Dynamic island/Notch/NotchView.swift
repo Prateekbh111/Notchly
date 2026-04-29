@@ -13,38 +13,42 @@ struct NotchView: View {
         PhaseReducer.reduce(hovered: hover.isHovered, hasMedia: nowPlaying.hasMedia)
     }
 
-    private var cornerRadii: (corner: CGFloat, top: CGFloat) {
-        switch phase {
-        case .idle:     return (notchSize.height / 2, min(8, notchSize.height / 2))
-        case .compact:  return (22, 12)
-        case .expanded: return (32, 28)
-        }
-    }
-
     private var shapeSize: CGSize {
         switch phase {
         case .idle:
-            return notchSize
+            return CGSize(width: notchSize.width, height: 0.1) // effectively invisible
         case .compact:
-            return CGSize(width: 280, height: max(notchSize.height + 4, 36))
+            return CGSize(width: 280, height: 36)
         case .expanded:
             return CGSize(width: 380, height: 180)
         }
     }
 
+    private var cornerRadii: (top: CGFloat, bottom: CGFloat) {
+        switch phase {
+        case .idle: return (4, 4)
+        case .compact: return (8, 22)
+        case .expanded: return (10, 32)
+        }
+    }
+
     var body: some View {
         ZStack(alignment: .top) {
-            // The morphing shape — always present, frame animated by phase.
             VStack(spacing: 0) {
+                // Spacer pushes the shape down by the notch height — the shape sits flush BELOW the physical notch.
+                Color.clear
+                    .frame(height: notchSize.height)
+
                 ZStack {
                     NotchBackground(
-                        cornerRadius: cornerRadii.corner,
+                        cornerRadius: cornerRadii.bottom,
                         topCornerRadius: cornerRadii.top
                     )
                     content
                         .opacity(phase == .idle ? 0 : 1)
                 }
                 .frame(width: shapeSize.width, height: shapeSize.height)
+
                 Spacer(minLength: 0)
             }
             .onHover { isHovered in
@@ -55,9 +59,9 @@ struct NotchView: View {
                 }
             }
 
-            // Entry hotspot — small zone around the physical notch.
+            // Entry hotspot — small zone at top covering the physical notch + small padding.
             Color.clear
-                .frame(width: notchHotspotWidth, height: 35)
+                .frame(width: notchHotspotWidth, height: notchSize.height + 4)
                 .contentShape(Rectangle())
                 .onHover { isHovered in
                     if isHovered {
