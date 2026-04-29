@@ -1,10 +1,13 @@
 import SwiftUI
+import AppKit
 import DynamicIslandCore
 
 struct ExpandedPhaseView: View {
     let snapshot: NowPlayingSnapshot
     let transport: TransportController
     let artNamespace: Namespace.ID
+
+    private let outputPicker = OutputPickerController()
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -45,9 +48,7 @@ struct ExpandedPhaseView: View {
                 Button(action: { transport.next() }) {
                     Image(systemName: "forward.fill")
                 }
-                Button(action: {}) {
-                    Image(systemName: "laptopcomputer")
-                }
+                OutputPickerButton(controller: outputPicker)
             }
             .buttonStyle(.plain)
             .foregroundStyle(.white)
@@ -56,6 +57,39 @@ struct ExpandedPhaseView: View {
         .padding(.horizontal, 16)
         .padding(.vertical, 14)
         .frame(width: 360)
+    }
+}
+
+private struct OutputPickerButton: NSViewRepresentable {
+    let controller: OutputPickerController
+
+    func makeNSView(context: Context) -> NSButton {
+        let button = NSButton()
+        button.bezelStyle = .inline
+        button.isBordered = false
+        button.imagePosition = .imageOnly
+        button.image = NSImage(systemSymbolName: "laptopcomputer", accessibilityDescription: "Audio output")
+        button.contentTintColor = .white
+        button.target = context.coordinator
+        button.action = #selector(Coordinator.click(_:))
+        return button
+    }
+
+    func updateNSView(_ nsView: NSButton, context: Context) { }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(controller: controller)
+    }
+
+    @MainActor
+    final class Coordinator: NSObject {
+        let controller: OutputPickerController
+        init(controller: OutputPickerController) { self.controller = controller }
+
+        @objc func click(_ sender: NSButton) {
+            let location = NSPoint(x: 0, y: sender.bounds.height + 4)
+            controller.presentMenu(at: location, in: sender)
+        }
     }
 }
 
