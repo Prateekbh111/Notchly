@@ -23,19 +23,20 @@ struct NotchView: View {
                     }
                 }
 
-            // Visible notch content
-            VStack(spacing: 0) {
-                content
-                    .background(NotchBackground(cornerRadius: 18))
-                    .id(phase)
-                    .transition(.asymmetric(
-                        insertion: .scale(scale: 0.92).combined(with: .opacity),
-                        removal: .scale(scale: 0.92).combined(with: .opacity)
-                    ))
-                Spacer(minLength: 0)
+            // Visible notch content — only when not idle
+            if phase != .idle {
+                VStack(spacing: 0) {
+                    content
+                        .background(NotchBackground(cornerRadius: 18))
+                    Spacer(minLength: 0)
+                }
+                .transition(.asymmetric(
+                    insertion: .scale(scale: 0.05, anchor: .top).combined(with: .opacity),
+                    removal: .scale(scale: 0.05, anchor: .top).combined(with: .opacity)
+                ))
             }
 
-            // Entry hotspot (small, top of panel, around the notch)
+            // Entry hotspot — small zone around the notch
             Color.clear
                 .frame(width: notchHotspotWidth, height: 35)
                 .contentShape(Rectangle())

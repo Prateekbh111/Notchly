@@ -8,11 +8,14 @@ final class RealMediaRemoteBridge: MediaRemoteBridge, @unchecked Sendable {
     private typealias GetNowPlayingInfoFn = @convention(c) (DispatchQueue, @escaping ([String: Any]) -> Void) -> Void
     private typealias SendCommandFn = @convention(c) (Int, [String: Any]?) -> Bool
     private typealias RegisterFn = @convention(c) (DispatchQueue) -> Void
+    private typealias SetCanBeNowPlayingFn = @convention(c) (Bool) -> Void
 
     private var handle: UnsafeMutableRawPointer?
     private var getInfo: GetNowPlayingInfoFn?
     private var sendCommand: SendCommandFn?
     private var registerForNotifications: RegisterFn?
+    private var setCanBeNowPlaying: SetCanBeNowPlayingFn?
+    private var pollTimer: Timer?
 
     private static let infoChangedName = "kMRMediaRemoteNowPlayingInfoDidChangeNotification"
     private static let appChangedName = "kMRMediaRemoteNowPlayingApplicationIsPlayingDidChangeNotification"
@@ -28,6 +31,11 @@ final class RealMediaRemoteBridge: MediaRemoteBridge, @unchecked Sendable {
         if let sym = dlsym(handle, "MRMediaRemoteSendCommand") {
             sendCommand = unsafeBitCast(sym, to: SendCommandFn.self)
         }
+        if let sym = dlsym(handle, "MRMediaRemoteSetCanBeNowPlayingApplication") {
+            setCanBeNowPlaying = unsafeBitCast(sym, to: SetCanBeNowPlayingFn.self)
+            setCanBeNowPlaying?(false)
+        }
+
         if let sym = dlsym(handle, "MRMediaRemoteRegisterForNowPlayingNotifications") {
             registerForNotifications = unsafeBitCast(sym, to: RegisterFn.self)
             registerForNotifications?(.main)
@@ -58,9 +66,17 @@ final class RealMediaRemoteBridge: MediaRemoteBridge, @unchecked Sendable {
         }
 
         fetchAndPublish()
+
+        let timer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { [weak self] _ in
+            self?.fetchAndPublish()
+        }
+        RunLoop.main.add(timer, forMode: .common)
+        self.pollTimer = timer
     }
 
     func stop() {
+        pollTimer?.invalidate()
+        pollTimer = nil
         DistributedNotificationCenter.default().removeObserver(self)
         NSWorkspace.shared.notificationCenter.removeObserver(self)
         if let handle = handle { dlclose(handle) }
