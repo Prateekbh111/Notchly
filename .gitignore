@@ -1,1 +1,16 @@
 .superpowers/
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Package.resolved
+
+# Xcode
+*.xcuserdatad/
+xcuserdata/
+DerivedData/
+build/
+*.xcworkspace/xcuserdata/
+
+# macOS
+.DS_Store
