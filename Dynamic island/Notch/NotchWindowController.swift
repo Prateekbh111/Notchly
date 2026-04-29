@@ -43,10 +43,30 @@ final class NotchWindowController {
         )
         let host = NSHostingView(rootView: root)
         host.frame = NSRect(origin: .zero, size: frame.size)
+        // Bug 2 fix: suppress safe area insets so SwiftUI content renders flush
+        // with the panel's top edge, sitting directly behind the physical notch.
+        host.safeAreaRegions = []
 
-        let trackingView = HoverTrackingView(tracker: hover, frame: host.bounds)
-        trackingView.autoresizingMask = [.width, .height]
-        host.addSubview(trackingView)
+        // Bug 1 fix: dual-tracking-view approach.
+        // Small entry hotspot — only the top 35pt (notch width + padding).
+        let notchHotspotWidth: CGFloat = {
+            if let leftMaxX = screen.auxiliaryTopLeftArea?.maxX,
+               let rightMinX = screen.auxiliaryTopRightArea?.minX {
+                return (rightMinX - leftMaxX) + 40
+            }
+            return 240
+        }()
+        let hotspotX = (frame.size.width - notchHotspotWidth) / 2
+        let hotspotRect = NSRect(x: hotspotX, y: frame.size.height - 35, width: notchHotspotWidth, height: 35)
+        let entryView = HoverTrackingView(tracker: hover, frame: hotspotRect)
+        entryView.autoresizingMask = []
+        host.addSubview(entryView)
+
+        // Large exit area — full panel so the cursor can move into the expanded
+        // card without immediately collapsing the notch.
+        let exitView = HoverExitTrackingView(tracker: hover, frame: host.bounds)
+        exitView.autoresizingMask = [.width, .height]
+        host.addSubview(exitView)
 
         panel.contentView = host
         panel.setFrame(frame, display: true)

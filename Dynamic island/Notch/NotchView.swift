@@ -14,11 +14,17 @@ struct NotchView: View {
     var body: some View {
         VStack(spacing: 0) {
             content
-                .background(NotchShape(cornerRadius: 18).fill(.black))
-                .animation(.spring(response: 0.35, dampingFraction: 0.78), value: phase)
+                .background(NotchBackground(cornerRadius: 18))
+                .id(phase)
+                .transition(.asymmetric(
+                    insertion: .scale(scale: 0.92).combined(with: .opacity),
+                    removal: .scale(scale: 0.92).combined(with: .opacity)
+                ))
+                .animation(.spring(response: 0.4, dampingFraction: 0.78), value: phase)
             Spacer(minLength: 0)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .ignoresSafeArea(.all)
     }
 
     @ViewBuilder

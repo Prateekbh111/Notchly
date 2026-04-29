@@ -7,7 +7,7 @@ final class RealMediaRemoteBridge: MediaRemoteBridge, @unchecked Sendable {
 
     private typealias GetNowPlayingInfoFn = @convention(c) (DispatchQueue, @escaping ([String: Any]) -> Void) -> Void
     private typealias SendCommandFn = @convention(c) (Int, [String: Any]?) -> Bool
-    private typealias RegisterFn = @convention(c) (Int) -> Void
+    private typealias RegisterFn = @convention(c) (DispatchQueue) -> Void
 
     private var handle: UnsafeMutableRawPointer?
     private var getInfo: GetNowPlayingInfoFn?
@@ -30,7 +30,7 @@ final class RealMediaRemoteBridge: MediaRemoteBridge, @unchecked Sendable {
         }
         if let sym = dlsym(handle, "MRMediaRemoteRegisterForNowPlayingNotifications") {
             registerForNotifications = unsafeBitCast(sym, to: RegisterFn.self)
-            registerForNotifications?(0)
+            registerForNotifications?(.main)
         }
 
         let center = DistributedNotificationCenter.default()
@@ -49,11 +49,20 @@ final class RealMediaRemoteBridge: MediaRemoteBridge, @unchecked Sendable {
             self?.fetchAndPublish()
         }
 
+        NSWorkspace.shared.notificationCenter.addObserver(
+            forName: NSWorkspace.didActivateApplicationNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.fetchAndPublish()
+        }
+
         fetchAndPublish()
     }
 
     func stop() {
         DistributedNotificationCenter.default().removeObserver(self)
+        NSWorkspace.shared.notificationCenter.removeObserver(self)
         if let handle = handle { dlclose(handle) }
         handle = nil
     }
