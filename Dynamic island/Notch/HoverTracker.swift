@@ -40,4 +40,8 @@ final class HoverTrackingView: NSView {
     override func mouseExited(with event: NSEvent) {
         Task { @MainActor in tracker.setHovered(false) }
     }
+
+    // Return nil so this view never claims mouse clicks; the NSTrackingArea
+    // still fires mouseEntered/mouseExited independently of hit-testing.
+    override func hitTest(_ point: NSPoint) -> NSView? { nil }
 }

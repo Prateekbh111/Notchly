@@ -1,8 +1,6 @@
 import AppKit
 
 final class NotchPanel: NSPanel {
-    var hitTestProvider: ((NSPoint) -> Bool)?
-
     init(contentRect: NSRect) {
         super.init(
             contentRect: contentRect,
