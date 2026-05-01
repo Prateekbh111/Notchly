@@ -115,16 +115,23 @@ func measure(_ path: String) {
     widths.sort()
     let bodyW = widths.isEmpty ? 0 : widths[widths.count / 2]
 
-    let topSpan = rowSpanInComponent(minY)
     let bottomSpan = rowSpanInComponent(maxY)
 
+    // Top inverse corner: shoulder is wider than body. Find first y from top
+    // where row width drops to body width — that's how many px the shoulder
+    // extends downward = tR (vertical depth).
     var tR = 0
     for y in minY...maxY {
-        if rowSpanInComponent(y) >= bodyW {
+        let span = rowSpanInComponent(y)
+        if span > 0 && span <= bodyW + 1 {
             tR = y - minY
             break
         }
     }
+
+    // Lateral shoulder extent — should match tR for a true quarter-circle arc.
+    let topSpan = rowSpanInComponent(minY)
+    let lateralShoulder = max(0, (topSpan - bodyW) / 2)
 
     var bR = 0
     for y in stride(from: maxY, through: minY, by: -1) {
@@ -134,22 +141,35 @@ func measure(_ path: String) {
         }
     }
 
+    // Cross-check: bottom-corner radius from row-width sweep up.
+    // Find first row from bottom where width hits bodyW. That's where
+    // bottom curve ends. distance from bottom = bR.
+    var bRCheck = 0
+    for y in stride(from: maxY, through: minY, by: -1) {
+        if rowSpanInComponent(y) >= bodyW {
+            bRCheck = maxY - y
+            break
+        }
+    }
+    _ = bRCheck
+
     let scale: Double = 2.0
     print("[\(path)]")
     print("  seed:            (\(seedX), \(seedY))")
     print("  pixel bounds:    \(pillW) × \(pillH) px  origin (\(minX), \(minY))")
     print("  body width:      \(bodyW) px")
-    print("  top span:        \(topSpan) px")
+    print("  top span:        \(rowSpanInComponent(minY)) px (widest row at top)")
     print("  bottom span:     \(bottomSpan) px")
-    print("  shoulder extent: \(max(0, (topSpan - bodyW) / 2)) px each side")
-    print("  top inverse R:   \(tR) px")
+    print("  shoulder lateral:\(lateralShoulder) px each side")
+    print("  shoulder vertical(tR depth): \(tR) px")
     print("  bottom R:        \(bR) px")
     print("  --- in points @ 2x ---")
     print("  body W:          \(Double(bodyW) / scale) pt")
-    print("  total W (max):   \(Double(max(topSpan, bodyW)) / scale) pt")
+    print("  total W (max):   \(Double(max(rowSpanInComponent(minY), bodyW)) / scale) pt")
     print("  pill H:          \(Double(pillH) / scale) pt")
-    print("  topInvR:         \(Double(tR) / scale) pt")
-    print("  bottomR:         \(Double(bR) / scale) pt")
+    print("  topInvR (lateral):  \(Double(lateralShoulder) / scale) pt")
+    print("  topInvR (vertical): \(Double(tR) / scale) pt")
+    print("  bottomR:            \(Double(bR) / scale) pt")
     print()
 }
 
