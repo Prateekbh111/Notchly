@@ -30,27 +30,27 @@ struct NotchView: View {
         }
     }
 
-    private var cornerRadii: (top: CGFloat, bottom: CGFloat) {
+    private var cornerRadius: CGFloat {
         switch phase {
-        case .idle:        return (0, 0)
-        case .compact:     return (8, 20)
-        case .titleBanner: return (10, 24)
-        case .expanded:    return (14, 36)
+        case .idle:        return 0
+        case .compact:     return 19
+        case .titleBanner: return 22
+        case .expanded:    return 36
         }
     }
 
     var body: some View {
-        let clipShape = NotchShape(
-            bottomRadius: cornerRadii.bottom,
-            topInvertedRadius: cornerRadii.top
+        let clipShape = UnevenRoundedRectangle(
+            topLeadingRadius: 0,
+            bottomLeadingRadius: cornerRadius,
+            bottomTrailingRadius: cornerRadius,
+            topTrailingRadius: 0,
+            style: .continuous
         )
         ZStack(alignment: .top) {
             VStack(spacing: 0) {
                 ZStack {
-                    NotchBackground(
-                        cornerRadius: cornerRadii.bottom,
-                        topCornerRadius: cornerRadii.top
-                    )
+                    NotchBackground(cornerRadius: cornerRadius)
                     content
                         .opacity(phase == .idle ? 0 : 1)
                         .frame(width: shapeSize.width, height: shapeSize.height, alignment: .top)

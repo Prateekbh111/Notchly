@@ -3,17 +3,18 @@ import AppKit
 
 struct NotchBackground: View {
     let bottomCornerRadius: CGFloat
-    let topInvertedRadius: CGFloat
 
-    init(cornerRadius: CGFloat, topCornerRadius: CGFloat = 10) {
+    init(cornerRadius: CGFloat) {
         self.bottomCornerRadius = cornerRadius
-        self.topInvertedRadius = topCornerRadius
     }
 
     var body: some View {
-        let shape = NotchShape(
-            bottomRadius: bottomCornerRadius,
-            topInvertedRadius: topInvertedRadius
+        let shape = UnevenRoundedRectangle(
+            topLeadingRadius: 0,
+            bottomLeadingRadius: bottomCornerRadius,
+            bottomTrailingRadius: bottomCornerRadius,
+            topTrailingRadius: 0,
+            style: .continuous
         )
         shape
             .fill(.black)
