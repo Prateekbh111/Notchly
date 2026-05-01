@@ -12,45 +12,45 @@ struct ExpandedPhaseView: View {
     private let outputPicker = OutputPickerController()
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack(spacing: 18) {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 12) {
                 ArtworkView(data: snapshot.track?.artwork)
-                    .frame(width: 88, height: 88)
-                    .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    .frame(width: 56, height: 56)
+                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
                     .matchedGeometryEffect(id: "artwork", in: artNamespace)
 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 2) {
                     Text(snapshot.track?.title ?? "Not Playing")
-                        .font(.system(size: 20, weight: .semibold))
+                        .font(.system(size: 14, weight: .semibold))
                         .foregroundStyle(.white)
                         .lineLimit(1)
                     if let artist = snapshot.track?.artist, !artist.isEmpty {
                         Text(artist)
-                            .font(.system(size: 16))
+                            .font(.system(size: 12))
                             .foregroundStyle(.white.opacity(0.7))
                             .lineLimit(1)
                     }
                 }
                 Spacer()
                 EQGlyphView(isPlaying: snapshot.isPlaying)
-                    .frame(width: 28, height: 28)
+                    .frame(width: 22, height: 22)
             }
 
             ScrubberView(elapsed: snapshot.elapsed, duration: snapshot.track?.duration ?? 0)
 
-            HStack(spacing: 36) {
+            HStack(spacing: 22) {
                 Button(action: { transport.toggleShuffle() }) {
-                    Image(systemName: "shuffle").font(.system(size: 20))
+                    Image(systemName: "shuffle").font(.system(size: 14))
                 }
                 Button(action: { transport.previous() }) {
-                    Image(systemName: "backward.fill").font(.system(size: 24))
+                    Image(systemName: "backward.fill").font(.system(size: 18))
                 }
                 Button(action: { transport.playPause() }) {
                     Image(systemName: snapshot.isPlaying ? "pause.fill" : "play.fill")
-                        .font(.system(size: 32))
+                        .font(.system(size: 24))
                 }
                 Button(action: { transport.next() }) {
-                    Image(systemName: "forward.fill").font(.system(size: 24))
+                    Image(systemName: "forward.fill").font(.system(size: 18))
                 }
                 OutputPickerButton(controller: outputPicker)
             }
@@ -58,8 +58,8 @@ struct ExpandedPhaseView: View {
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity)
         }
-        .padding(.horizontal, 24)
-        .padding(.vertical, 20)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 14)
         .frame(width: width, height: height)
     }
 }

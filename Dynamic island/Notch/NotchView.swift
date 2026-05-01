@@ -33,11 +33,11 @@ struct NotchView: View {
         case .idle:
             return Geometry(width: notchSize.width, height: 0.1, bottomRadius: 0, topInvertedRadius: 0)
         case .compact:
-            return Geometry(width: notchSize.width + 80, height: notchSize.height, bottomRadius: 0, topInvertedRadius: 12)
+            return Geometry(width: 257, height: notchSize.height, bottomRadius: 12, topInvertedRadius: 6)
         case .titleBanner:
-            return Geometry(width: 580, height: 88, bottomRadius: 24, topInvertedRadius: 12)
+            return Geometry(width: 276, height: 74, bottomRadius: 22, topInvertedRadius: 6)
         case .expanded:
-            return Geometry(width: 770, height: 280, bottomRadius: 32, topInvertedRadius: 12)
+            return Geometry(width: 345, height: 174, bottomRadius: 44, topInvertedRadius: 16)
         }
     }
 

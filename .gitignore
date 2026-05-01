@@ -19,3 +19,10 @@ build/
 .reference_frames/
 refrence.mov
 reference.mov
+*.mov
+*.mp4
+alcove_*.png
+idle.png
+compact.png
+banner.png
+expanded.png

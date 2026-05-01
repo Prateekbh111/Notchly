@@ -9,29 +9,29 @@ struct TitleBannerView: View {
     let height: CGFloat
 
     var body: some View {
-        HStack(spacing: 14) {
+        HStack(spacing: 10) {
             ArtworkView(data: track?.artwork)
-                .frame(width: 48, height: 48)
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                .frame(width: 40, height: 40)
+                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                 .matchedGeometryEffect(id: "artwork", in: artNamespace)
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 1) {
                 Text(track?.title ?? "")
-                    .font(.system(size: 15, weight: .semibold))
+                    .font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(.white)
                     .lineLimit(1)
                 Text(track?.artist ?? "")
-                    .font(.system(size: 13))
+                    .font(.system(size: 11))
                     .foregroundStyle(.white.opacity(0.7))
                     .lineLimit(1)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
             EQGlyphView(isPlaying: isPlaying)
-                .frame(width: 22, height: 22)
+                .frame(width: 18, height: 18)
         }
-        .padding(.horizontal, 18)
-        .padding(.vertical, 12)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
         .frame(width: width, height: height)
     }
 }

@@ -4,8 +4,8 @@ import DynamicIslandCore
 
 @MainActor
 final class NotchWindowController {
-    static let panelWidth: CGFloat = 880
-    static let panelHeight: CGFloat = 320
+    static let panelWidth: CGFloat = 500
+    static let panelHeight: CGFloat = 240
 
     private var panel: NotchPanel?
     private let nowPlaying: NowPlayingService
