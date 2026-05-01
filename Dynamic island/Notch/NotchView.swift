@@ -24,8 +24,8 @@ struct NotchView: View {
     private var shapeSize: CGSize {
         switch phase {
         case .idle:        return CGSize(width: notchSize.width, height: 0.1)
-        case .compact:     return CGSize(width: 200, height: 32)
-        case .titleBanner: return CGSize(width: 420, height: 40)
+        case .compact:     return CGSize(width: 220, height: 36)
+        case .titleBanner: return CGSize(width: 320, height: 42)
         case .expanded:    return CGSize(width: 380, height: 180)
         }
     }
@@ -33,8 +33,8 @@ struct NotchView: View {
     private var cornerRadii: (top: CGFloat, bottom: CGFloat) {
         switch phase {
         case .idle:        return (0, 0)
-        case .compact:     return (0, 12)
-        case .titleBanner: return (0, 20)
+        case .compact:     return (0, 18)
+        case .titleBanner: return (0, 22)
         case .expanded:    return (0, 32)
         }
     }
@@ -77,7 +77,7 @@ struct NotchView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .ignoresSafeArea(.all)
-        .animation(.interpolatingSpring(stiffness: 220, damping: 22), value: phase)
+        .animation(.spring(response: 0.45, dampingFraction: 0.74), value: phase)
         .onReceive(tick) { now in nowTick = now }
     }
 

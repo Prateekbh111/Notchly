@@ -9,7 +9,7 @@ struct TitleBannerView: View {
     var body: some View {
         HStack(spacing: 10) {
             ArtworkView(data: track?.artwork)
-                .frame(width: 26, height: 26)
+                .frame(width: 28, height: 28)
                 .clipShape(Circle())
                 .matchedGeometryEffect(id: "artwork", in: artNamespace)
 
@@ -17,10 +17,10 @@ struct TitleBannerView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
 
             EQGlyphView(isPlaying: isPlaying)
-                .frame(width: 16, height: 16)
+                .frame(width: 18, height: 18)
         }
-        .padding(.horizontal, 12)
-        .frame(width: 420, height: 40)
+        .padding(.horizontal, 14)
+        .frame(width: 320, height: 42)
     }
 
     private var bannerText: String {
