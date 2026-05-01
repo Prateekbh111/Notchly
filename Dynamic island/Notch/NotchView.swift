@@ -28,16 +28,20 @@ struct NotchView: View {
         var topInvertedRadius: CGFloat
     }
 
+    // Constant top inverse radius across visible phases — keeps pill body
+    // anchor invariant during shape morph, avoids vertical jump.
+    private static let topInvR: CGFloat = 12
+
     private var geometry: Geometry {
         switch phase {
         case .idle:
             return Geometry(width: notchSize.width, height: 0.1, bottomRadius: 0, topInvertedRadius: 0)
         case .compact:
-            return Geometry(width: 257, height: notchSize.height, bottomRadius: 12, topInvertedRadius: 5.5)
+            return Geometry(width: 257, height: notchSize.height, bottomRadius: 12, topInvertedRadius: Self.topInvR)
         case .titleBanner:
-            return Geometry(width: 276, height: 74, bottomRadius: 22, topInvertedRadius: 7)
+            return Geometry(width: 276, height: 74, bottomRadius: 22, topInvertedRadius: Self.topInvR)
         case .expanded:
-            return Geometry(width: 345, height: 174, bottomRadius: 44, topInvertedRadius: 16.5)
+            return Geometry(width: 345, height: 174, bottomRadius: 44, topInvertedRadius: Self.topInvR)
         }
     }
 
@@ -65,7 +69,7 @@ struct NotchView: View {
                         )
                 }
                 .frame(width: g.width, height: g.height)
-                .padding(.top, g.topInvertedRadius)
+                .padding(.top, phase == .idle ? 0 : Self.topInvR)
                 .contentShape(
                     NotchShape(
                         width: g.width,
@@ -90,7 +94,7 @@ struct NotchView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .ignoresSafeArea(.all)
-        .animation(.smooth(duration: 0.5, extraBounce: 0.18), value: phase)
+        .animation(.smooth(duration: 0.42, extraBounce: 0.22), value: phase)
         .onReceive(tick) { now in nowTick = now }
     }
 

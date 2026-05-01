@@ -6,7 +6,7 @@ struct EQGlyphView: View {
     var barCount: Int = 3
     var spacing: CGFloat = 2
     var barWidth: CGFloat = 2.5
-    var color: Color = .white.opacity(0.85)
+    var color: Color = .white.opacity(0.60)
 
     @State private var time: TimeInterval = 0
     private let timer = Timer.publish(every: 1.0 / 30.0, on: .main, in: .common).autoconnect()
