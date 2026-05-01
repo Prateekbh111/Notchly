@@ -24,28 +24,25 @@ struct NotchView: View {
     private var shapeSize: CGSize {
         switch phase {
         case .idle:        return CGSize(width: notchSize.width, height: 0.1)
-        case .compact:     return CGSize(width: 220, height: 36)
-        case .titleBanner: return CGSize(width: 320, height: 42)
-        case .expanded:    return CGSize(width: 380, height: 180)
+        case .compact:     return CGSize(width: 240, height: 38)
+        case .titleBanner: return CGSize(width: 360, height: 44)
+        case .expanded:    return CGSize(width: 480, height: 240)
         }
     }
 
     private var cornerRadii: (top: CGFloat, bottom: CGFloat) {
         switch phase {
         case .idle:        return (0, 0)
-        case .compact:     return (0, 18)
-        case .titleBanner: return (0, 22)
-        case .expanded:    return (0, 32)
+        case .compact:     return (8, 20)
+        case .titleBanner: return (10, 24)
+        case .expanded:    return (14, 36)
         }
     }
 
     var body: some View {
-        let clipShape = UnevenRoundedRectangle(
-            topLeadingRadius: cornerRadii.top,
-            bottomLeadingRadius: cornerRadii.bottom,
-            bottomTrailingRadius: cornerRadii.bottom,
-            topTrailingRadius: cornerRadii.top,
-            style: .continuous
+        let clipShape = NotchShape(
+            bottomRadius: cornerRadii.bottom,
+            topInvertedRadius: cornerRadii.top
         )
         ZStack(alignment: .top) {
             VStack(spacing: 0) {
@@ -77,7 +74,7 @@ struct NotchView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .ignoresSafeArea(.all)
-        .animation(.spring(response: 0.45, dampingFraction: 0.74), value: phase)
+        .animation(.smooth(duration: 0.48, extraBounce: 0.18), value: phase)
         .onReceive(tick) { now in nowTick = now }
     }
 

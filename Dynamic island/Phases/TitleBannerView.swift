@@ -20,7 +20,7 @@ struct TitleBannerView: View {
                 .frame(width: 18, height: 18)
         }
         .padding(.horizontal, 14)
-        .frame(width: 320, height: 42)
+        .frame(width: 360, height: 44)
     }
 
     private var bannerText: String {

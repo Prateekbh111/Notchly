@@ -19,7 +19,7 @@ struct CompactPhaseView: View {
                 .frame(width: 16, height: 16)
         }
         .padding(.horizontal, 14)
-        .frame(width: 220, height: 36)
+        .frame(width: 240, height: 38)
     }
 }
 
