@@ -21,43 +21,58 @@ struct NotchView: View {
         )
     }
 
-    private var shapeSize: CGSize {
-        switch phase {
-        case .idle:        return CGSize(width: notchSize.width, height: 0.1)
-        case .compact:     return CGSize(width: 240, height: 38)
-        case .titleBanner: return CGSize(width: 360, height: 44)
-        case .expanded:    return CGSize(width: 480, height: 240)
-        }
+    private struct Geometry {
+        var width: CGFloat
+        var height: CGFloat
+        var bottomRadius: CGFloat
+        var topInvertedRadius: CGFloat
     }
 
-    private var cornerRadius: CGFloat {
+    private var geometry: Geometry {
         switch phase {
-        case .idle:        return 0
-        case .compact:     return 19
-        case .titleBanner: return 22
-        case .expanded:    return 36
+        case .idle:
+            return Geometry(width: notchSize.width, height: 0.1, bottomRadius: 0, topInvertedRadius: 0)
+        case .compact:
+            return Geometry(width: notchSize.width + 80, height: notchSize.height, bottomRadius: 0, topInvertedRadius: 12)
+        case .titleBanner:
+            return Geometry(width: 580, height: 88, bottomRadius: 24, topInvertedRadius: 12)
+        case .expanded:
+            return Geometry(width: 770, height: 280, bottomRadius: 32, topInvertedRadius: 12)
         }
     }
 
     var body: some View {
-        let clipShape = UnevenRoundedRectangle(
-            topLeadingRadius: 0,
-            bottomLeadingRadius: cornerRadius,
-            bottomTrailingRadius: cornerRadius,
-            topTrailingRadius: 0,
-            style: .continuous
-        )
+        let g = geometry
         ZStack(alignment: .top) {
             VStack(spacing: 0) {
                 ZStack {
-                    NotchBackground(cornerRadius: cornerRadius)
+                    NotchBackground(
+                        width: g.width,
+                        height: g.height,
+                        bottomRadius: g.bottomRadius,
+                        topInvertedRadius: g.topInvertedRadius
+                    )
                     content
                         .opacity(phase == .idle ? 0 : 1)
-                        .frame(width: shapeSize.width, height: shapeSize.height, alignment: .top)
-                        .clipShape(clipShape)
+                        .frame(width: g.width, height: g.height, alignment: .top)
+                        .clipShape(
+                            NotchShape(
+                                width: g.width,
+                                height: g.height,
+                                bottomRadius: g.bottomRadius,
+                                topInvertedRadius: 0
+                            )
+                        )
                 }
-                .frame(width: shapeSize.width, height: shapeSize.height)
-                .contentShape(clipShape)
+                .frame(width: g.width, height: g.height)
+                .contentShape(
+                    NotchShape(
+                        width: g.width,
+                        height: g.height,
+                        bottomRadius: g.bottomRadius,
+                        topInvertedRadius: g.topInvertedRadius
+                    )
+                )
                 .onHover { isHovered in
                     hover.setHovered(isHovered)
                 }
@@ -74,7 +89,7 @@ struct NotchView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .ignoresSafeArea(.all)
-        .animation(.smooth(duration: 0.48, extraBounce: 0.18), value: phase)
+        .animation(.smooth(duration: 0.5, extraBounce: 0.18), value: phase)
         .onReceive(tick) { now in nowTick = now }
     }
 
@@ -87,21 +102,27 @@ struct NotchView: View {
             CompactPhaseView(
                 track: nowPlaying.snapshot.track,
                 isPlaying: nowPlaying.snapshot.isPlaying,
-                artNamespace: artNamespace
+                artNamespace: artNamespace,
+                width: geometry.width,
+                height: geometry.height
             )
             .transition(.opacity)
         case .titleBanner:
             TitleBannerView(
                 track: nowPlaying.snapshot.track,
                 isPlaying: nowPlaying.snapshot.isPlaying,
-                artNamespace: artNamespace
+                artNamespace: artNamespace,
+                width: geometry.width,
+                height: geometry.height
             )
             .transition(.opacity)
         case .expanded:
             ExpandedPhaseView(
                 snapshot: nowPlaying.snapshot,
                 transport: transport,
-                artNamespace: artNamespace
+                artNamespace: artNamespace,
+                width: geometry.width,
+                height: geometry.height
             )
             .transition(.opacity)
         }

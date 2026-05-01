@@ -5,21 +5,23 @@ struct CompactPhaseView: View {
     let track: Track?
     let isPlaying: Bool
     let artNamespace: Namespace.ID
+    let width: CGFloat
+    let height: CGFloat
 
     var body: some View {
         HStack {
             ArtworkView(data: track?.artwork)
-                .frame(width: 24, height: 24)
-                .clipShape(Circle())
+                .frame(width: height - 12, height: height - 12)
+                .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
                 .matchedGeometryEffect(id: "artwork", in: artNamespace)
 
             Spacer()
 
             EQGlyphView(isPlaying: isPlaying)
-                .frame(width: 16, height: 16)
+                .frame(width: 18, height: height - 16)
         }
         .padding(.horizontal, 14)
-        .frame(width: 240, height: 38)
+        .frame(width: width, height: height)
     }
 }
 
