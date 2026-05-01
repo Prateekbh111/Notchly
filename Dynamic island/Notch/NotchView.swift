@@ -65,6 +65,7 @@ struct NotchView: View {
                         )
                 }
                 .frame(width: g.width, height: g.height)
+                .padding(.top, notchSize.height)
                 .contentShape(
                     NotchShape(
                         width: g.width,
