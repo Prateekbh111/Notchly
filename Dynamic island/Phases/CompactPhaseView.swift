@@ -10,42 +10,16 @@ struct CompactPhaseView: View {
         HStack {
             ArtworkView(data: track?.artwork)
                 .frame(width: 22, height: 22)
-                .clipShape(RoundedRectangle(cornerRadius: 5))
+                .clipShape(Circle())
                 .matchedGeometryEffect(id: "artwork", in: artNamespace)
 
             Spacer()
 
-            EQBars(active: isPlaying)
-                .frame(width: 18, height: 18)
+            EQGlyphView(isPlaying: isPlaying)
+                .frame(width: 14, height: 14)
         }
-        .padding(.horizontal, 14)
-        .frame(width: 280, height: 30)
-    }
-}
-
-private struct EQBars: View {
-    let active: Bool
-    @State private var phase: Double = 0
-
-    var body: some View {
-        HStack(spacing: 2) {
-            ForEach(0..<4, id: \.self) { i in
-                Capsule()
-                    .fill(.white)
-                    .frame(width: 2, height: heightForBar(i))
-            }
-        }
-        .onAppear {
-            guard active else { return }
-            withAnimation(.easeInOut(duration: 0.5).repeatForever()) {
-                phase = .pi
-            }
-        }
-    }
-
-    private func heightForBar(_ i: Int) -> CGFloat {
-        let base: CGFloat = active ? CGFloat(6 + (i * 2) % 8) : 4
-        return base
+        .padding(.horizontal, 12)
+        .frame(width: 200, height: 32)
     }
 }
 

@@ -1,6 +1,7 @@
 public enum PhaseReducer {
-    public static func reduce(hovered: Bool, hasMedia: Bool) -> Phase {
+    public static func reduce(hovered: Bool, hasMedia: Bool, recentChange: Bool) -> Phase {
         if hovered { return .expanded }
-        return hasMedia ? .compact : .idle
+        guard hasMedia else { return .idle }
+        return recentChange ? .titleBanner : .compact
     }
 }

@@ -14,3 +14,8 @@ build/
 
 # macOS
 .DS_Store
+
+# Reference / scratch artifacts
+.reference_frames/
+refrence.mov
+reference.mov

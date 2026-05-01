@@ -8,7 +8,23 @@
 
 /* Begin PBXBuildFile section */
 		4AE5D9649BA79E97E99477DE /* DynamicIslandCore in Frameworks */ = {isa = PBXBuildFile; productRef = 0E1B584BB07229FBBF390E42 /* DynamicIslandCore */; };
+		A1B2C3D400000000000000F1 /* MediaRemoteAdapter in Frameworks */ = {isa = PBXBuildFile; productRef = A1B2C3D400000000000000E1 /* MediaRemoteAdapter */; };
+		A1B2C3D400000000000000F2 /* MediaRemoteAdapter in Embed Frameworks */ = {isa = PBXBuildFile; productRef = A1B2C3D400000000000000E1 /* MediaRemoteAdapter */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A1B2C3D400000000000000C1 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				A1B2C3D400000000000000F2 /* MediaRemoteAdapter in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		876982D22FA20EB50058C57B /* Dynamic island.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Dynamic island.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -17,8 +33,6 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		876982D42FA20EB50058C57B /* Dynamic island */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = "Dynamic island";
 			sourceTree = "<group>";
 		};
@@ -30,6 +44,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4AE5D9649BA79E97E99477DE /* DynamicIslandCore in Frameworks */,
+				A1B2C3D400000000000000F1 /* MediaRemoteAdapter in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -62,6 +77,7 @@
 				876982CE2FA20EB40058C57B /* Sources */,
 				876982CF2FA20EB40058C57B /* Frameworks */,
 				876982D02FA20EB40058C57B /* Resources */,
+				A1B2C3D400000000000000C1 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -73,6 +89,7 @@
 			name = "Dynamic island";
 			packageProductDependencies = (
 				0E1B584BB07229FBBF390E42 /* DynamicIslandCore */,
+				A1B2C3D400000000000000E1 /* MediaRemoteAdapter */,
 			);
 			productName = "Dynamic island";
 			productReference = 876982D22FA20EB50058C57B /* Dynamic island.app */;
@@ -104,6 +121,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				162B13C01595BC0C6E568D31 /* XCLocalSwiftPackageReference "DynamicIslandCore" */,
+				A1B2C3D400000000000000D1 /* XCRemoteSwiftPackageReference "mediaremote-adapter" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 876982D32FA20EB50058C57B /* Products */;
@@ -366,11 +384,27 @@
 		};
 /* End XCLocalSwiftPackageReference section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		A1B2C3D400000000000000D1 /* XCRemoteSwiftPackageReference "mediaremote-adapter" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ejbills/mediaremote-adapter.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		0E1B584BB07229FBBF390E42 /* DynamicIslandCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 162B13C01595BC0C6E568D31 /* XCLocalSwiftPackageReference "DynamicIslandCore" */;
 			productName = DynamicIslandCore;
+		};
+		A1B2C3D400000000000000E1 /* MediaRemoteAdapter */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1B2C3D400000000000000D1 /* XCRemoteSwiftPackageReference "mediaremote-adapter" */;
+			productName = MediaRemoteAdapter;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

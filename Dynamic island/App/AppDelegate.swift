@@ -15,7 +15,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             return
         }
 
-        let bridge = RealMediaRemoteBridge()
+        let bridge = MediaRemoteAdapterBridge()
         let nowPlaying = NowPlayingService(bridge: bridge)
         let transport = TransportController(bridge: bridge)
         let hover = HoverTracker()
