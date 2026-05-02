@@ -6,6 +6,7 @@ struct NotchView: View {
     @ObservedObject var nowPlaying: NowPlayingService
     let transport: TransportController
     @ObservedObject var hover: HoverTracker
+    @ObservedObject var hudService: SystemHUDService
     let notchHotspotWidth: CGFloat
     let notchHotspotHeight: CGFloat
     let notchSize: CGSize
@@ -54,6 +55,9 @@ struct NotchView: View {
     }
 
     private var geometry: Geometry {
+        if hudService.hud != nil {
+            return Geometry(width: 320, height: notchSize.height, bottomRadius: 12, topInvertedRadius: Self.topInvR)
+        }
         switch phase {
         case .idle:
             return Geometry(width: notchSize.width, height: notchSize.height, bottomRadius: 12, topInvertedRadius: Self.topInvR)
@@ -71,18 +75,7 @@ struct NotchView: View {
         ZStack(alignment: .top) {
             VStack(spacing: 0) {
                 ZStack {
-                    NotchShape(
-                        width: g.width,
-                        height: g.height,
-                        bottomRadius: g.bottomRadius,
-                        topInvertedRadius: g.topInvertedRadius
-                    )
-                    .fill(.black.opacity(0.10))
-                    .background(.ultraThinMaterial)
-                    .blur(radius: 20)
-                    .opacity(phase == .expanded ? 0.9 : 0)
-                    .frame(width: g.width, height: g.height)
-                    .allowsHitTesting(false)
+                    
                     NotchBackground(
                         width: g.width,
                         height: g.height,
@@ -104,7 +97,7 @@ struct NotchView: View {
                         snapshot: nowPlaying.snapshot,
                         namespace: artNamespace,
                         cornerRadius: phase == .expanded ? 10 : 6,
-                        visible: phase != .idle
+                        visible: phase != .idle && hudService.hud == nil
                     )
                     .frame(width: g.width, height: g.height, alignment: .top)
                     .clipShape(
@@ -119,7 +112,7 @@ struct NotchView: View {
                     SharedEQ(
                         isPlaying: nowPlaying.snapshot.isPlaying,
                         namespace: artNamespace,
-                        visible: phase != .idle
+                        visible: phase != .idle && hudService.hud == nil
                     )
                     .frame(width: g.width, height: g.height, alignment: .top)
                     .clipShape(
@@ -158,6 +151,7 @@ struct NotchView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .ignoresSafeArea(.all)
         .animation(transitionAnimation, value: phase)
+        .animation(transitionAnimation, value: hudService.hud)
         .onReceive(tick) { now in nowTick = now }
         .onChange(of: phase) { _, newPhase in
             previousPhaseRank = Self.rank(newPhase)
@@ -166,6 +160,21 @@ struct NotchView: View {
 
     @ViewBuilder
     private var content: some View {
+        if let hud = hudService.hud {
+            HudPhaseView(
+                state: hud,
+                width: geometry.width,
+                height: geometry.height,
+                notchWidth: notchSize.width
+            )
+            .transition(.opacity.animation(.easeOut(duration: 0.2)))
+        } else {
+            phaseContent
+        }
+    }
+
+    @ViewBuilder
+    private var phaseContent: some View {
         switch phase {
         case .idle:
             EmptyView()
@@ -209,7 +218,12 @@ private struct SharedArtwork: View {
     let visible: Bool
 
     var body: some View {
-        ArtworkView(data: snapshot.track?.artwork)
+        Color.clear
+            .aspectRatio(1, contentMode: .fit)
+            .overlay {
+                ArtworkView(data: snapshot.track?.artwork)
+                    .aspectRatio(contentMode: .fill)
+            }
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)

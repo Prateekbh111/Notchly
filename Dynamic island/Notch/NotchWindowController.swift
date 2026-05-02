@@ -11,6 +11,7 @@ final class NotchWindowController {
     private let nowPlaying: NowPlayingService
     private let transport: TransportController
     private let hover: HoverTracker
+    private let hudService: SystemHUDService
     private var screen: NSScreen
 
     private var notchCenterX: CGFloat = 0
@@ -23,12 +24,14 @@ final class NotchWindowController {
         screen: NSScreen,
         nowPlaying: NowPlayingService,
         transport: TransportController,
-        hover: HoverTracker
+        hover: HoverTracker,
+        hudService: SystemHUDService
     ) {
         self.screen = screen
         self.nowPlaying = nowPlaying
         self.transport = transport
         self.hover = hover
+        self.hudService = hudService
 
         NotificationCenter.default.addObserver(
             self,
@@ -66,6 +69,7 @@ final class NotchWindowController {
             nowPlaying: nowPlaying,
             transport: transport,
             hover: hover,
+            hudService: hudService,
             notchHotspotWidth: notchHotspotWidth,
             notchHotspotHeight: notchHotspotHeight,
             notchSize: notchSize
