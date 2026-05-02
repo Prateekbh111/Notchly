@@ -83,7 +83,7 @@ struct NotchView: View {
                         topInvertedRadius: g.topInvertedRadius
                     )
                     content
-                        .opacity(phase == .idle ? 0 : 1)
+                        .opacity(phase == .idle && hudService.hud == nil ? 0 : 1)
                         .frame(width: g.width, height: g.height, alignment: .top)
                         .clipShape(
                             NotchShape(
