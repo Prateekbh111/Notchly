@@ -46,9 +46,9 @@ struct NotchView: View {
         let nextRank = Self.rank(phase)
         let isExpanding = nextRank > previousPhaseRank
         if isExpanding {
-            return .smooth(duration: 0.45, extraBounce: 0.18)
+            return .spring(response: 0.42, dampingFraction: 0.78)
         } else {
-            return .spring(response: 0.32, dampingFraction: 0.92)
+            return .spring(response: 0.38, dampingFraction: 0.86)
         }
     }
 
