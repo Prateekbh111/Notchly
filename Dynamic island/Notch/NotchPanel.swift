@@ -11,7 +11,7 @@ final class NotchPanel: NSPanel {
         isOpaque = false
         backgroundColor = .clear
         hasShadow = false
-        level = NSWindow.Level(Int(CGWindowLevelForKey(.statusWindow)) + 1)
+        level = NSWindow.Level(Int(CGWindowLevelForKey(.statusWindow)))
         collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary]
         isMovable = false
         ignoresMouseEvents = false
@@ -19,8 +19,4 @@ final class NotchPanel: NSPanel {
 
     override var canBecomeKey: Bool { false }
     override var canBecomeMain: Bool { false }
-
-    override func mouseDown(with event: NSEvent) {
-        contentView?.mouseDown(with: event)
-    }
 }

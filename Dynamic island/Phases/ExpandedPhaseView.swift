@@ -45,34 +45,65 @@ struct ExpandedPhaseView: View {
 
             ScrubberView(elapsed: snapshot.elapsed, duration: snapshot.track?.duration ?? 0)
 
-            HStack(spacing: 0) {
+            HStack {
                 Button(action: { transport.toggleShuffle() }) {
-                    Image(systemName: "shuffle").font(.system(size: 14))
+                    Image(systemName: "shuffle").font(.system(size: 16))
                 }
-                Spacer()
+                .opacity(0.4).padding(.trailing, 20)
                 HStack(spacing: 26) {
                     Button(action: { transport.previous() }) {
-                        Image(systemName: "backward.fill").font(.system(size: 20))
+                        Image(systemName: "backward.fill").font(.system(size: 23)).opacity(0.7)
                     }
+                    .buttonStyle(TransportButtonStyle())
                     Button(action: { transport.playPause() }) {
                         Image(systemName: snapshot.isPlaying ? "pause.fill" : "play.fill")
-                            .font(.system(size: 28, weight: .regular))
+                            .font(.system(size: 32, weight: .regular)).opacity(0.7)
                     }
+                    .buttonStyle(TransportButtonStyle(diameter: 48))
                     Button(action: { transport.next() }) {
-                        Image(systemName: "forward.fill").font(.system(size: 20))
+                        Image(systemName: "forward.fill").font(.system(size: 23)).opacity(0.7)
                     }
+                    .buttonStyle(TransportButtonStyle())
                 }
-                Spacer()
                 OutputPickerButton(controller: outputPicker)
+                    .frame(width: 30, height: 30)
+                    .opacity(0.4).padding(.leading, 20)
             }
             .buttonStyle(.plain)
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity)
         }
         .padding(.top, notchInset)
-        .padding(.horizontal, 16)
-        .padding(.bottom, 14)
+        .padding(.horizontal, 20)
+        .padding(.bottom, 30)
         .frame(width: width, height: height)
+    }
+}
+
+private struct TransportButtonStyle: ButtonStyle {
+    var diameter: CGFloat = 40
+
+    func makeBody(configuration: Configuration) -> some View {
+        Label(configuration: configuration, diameter: diameter)
+    }
+
+    private struct Label: View {
+        let configuration: Configuration
+        let diameter: CGFloat
+        @State private var hovering = false
+
+        var body: some View {
+            configuration.label
+                .background(
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .fill(.white.opacity(hovering ? 0.15 : 0))
+                        .frame(width: diameter, height: diameter)
+                )
+                .scaleEffect(configuration.isPressed ? 0.92 : 1)
+                .onHover { hovering = $0 }
+                .animation(.easeOut(duration: 0.12), value: hovering)
+                .animation(.easeOut(duration: 0.10), value: configuration.isPressed)
+        }
     }
 }
 
@@ -114,22 +145,19 @@ private struct ScrubberView: View {
     let duration: TimeInterval
 
     var body: some View {
-        VStack(spacing: 4) {
-            GeometryReader { geo in
-                ZStack(alignment: .leading) {
-                    Capsule().fill(.white.opacity(0.2))
-                    Capsule().fill(.white).frame(width: geo.size.width * progress)
+        HStack{
+            Text(format(elapsed)).font(.system(size: 11)).foregroundStyle(.white.opacity(0.6))
+            VStack(spacing: 4) {
+                GeometryReader { geo in
+                    ZStack(alignment: .leading) {
+                        Capsule().fill(.white.opacity(0.2))
+                        Capsule().fill(.white.opacity(0.80)).frame(width: geo.size.width * progress)
+                    }
                 }
-            }
-            .frame(height: 4)
-
-            HStack {
-                Text(format(elapsed))
-                Spacer()
-                Text("-" + format(max(0, duration - elapsed)))
-            }
-            .font(.system(size: 11))
-            .foregroundStyle(.white.opacity(0.6))
+                .frame(height: 8)
+            
+        }
+            Text("-" + format(max(0, duration - elapsed))).font(.system(size: 11)).foregroundStyle(.white.opacity(0.6))
         }
     }
 

@@ -10,36 +10,36 @@ struct TitleBannerView: View {
     let notchInset: CGFloat
 
     var body: some View {
-        HStack(spacing: 12) {
-            ArtworkView(data: track?.artwork)
-                .frame(width: 36, height: 36)
-                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .fill(.black.opacity(isPlaying ? 0 : 0.4))
-                )
-                .opacity(isPlaying ? 1 : 0.6)
-                .matchedGeometryEffect(id: "artwork", in: artNamespace)
-
-            VStack(alignment: .leading, spacing: 1) {
+        VStack(){
+            HStack(spacing: 12) {
+                ArtworkView(data: track?.artwork)
+                    .frame(width: max(0, notchInset - 8), height: max(0, notchInset - 8))
+                    .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 6, style: .continuous)
+                            .fill(.black.opacity(isPlaying ? 0 : 0.4))
+                    )
+                    .opacity(isPlaying ? 1 : 0.6)
+                    .matchedGeometryEffect(id: "artwork", in: artNamespace)
+                Spacer()
+                EQGlyphView(isPlaying: isPlaying)
+                    .frame(width: max(0, notchInset - 12), height: max(0, notchInset - 12))
+                    .opacity(isPlaying ? 1 : 0.45)
+            }
+            HStack(alignment: .center) {
                 Text(track?.title ?? "")
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(.white)
+                Text(" . ").font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(.white)
                     .lineLimit(1)
                 Text(track?.artist ?? "")
-                    .font(.system(size: 11))
-                    .foregroundStyle(.white.opacity(0.7))
-                    .lineLimit(1)
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(.white)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-
-            EQGlyphView(isPlaying: isPlaying)
-                .frame(width: 18, height: 18)
-                .opacity(isPlaying ? 1 : 0.45)
+            .frame(maxWidth: .infinity, alignment: .center)
         }
-        .padding(.top, notchInset)
-        .padding(.horizontal, 12)
-        .padding(.bottom, 8)
+        .padding(.horizontal, 8)
         .frame(width: width, height: height)
     }
 }

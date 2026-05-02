@@ -40,7 +40,7 @@ struct NotchView: View {
 
     // Constant top inverse radius across visible phases — keeps pill body
     // anchor invariant during shape morph, avoids vertical jump.
-    private static let topInvR: CGFloat = 12
+    private static let topInvR: CGFloat = 6
 
     private var transitionAnimation: Animation {
         let nextRank = Self.rank(phase)
@@ -59,7 +59,7 @@ struct NotchView: View {
         case .compact:
             return Geometry(width: 257, height: notchSize.height, bottomRadius: 12, topInvertedRadius: Self.topInvR)
         case .titleBanner:
-            return Geometry(width: 276, height: 74, bottomRadius: 22, topInvertedRadius: Self.topInvR)
+            return Geometry(width: 257, height: 60, bottomRadius: 22, topInvertedRadius: Self.topInvR)
         case .expanded:
             return Geometry(width: 345, height: 174, bottomRadius: 44, topInvertedRadius: Self.topInvR)
         }
@@ -68,14 +68,6 @@ struct NotchView: View {
     var body: some View {
         let g = geometry
         ZStack(alignment: .top) {
-            // Backdrop scrim — dim+blur the screen while expanded (hover).
-            Rectangle()
-                .fill(.black.opacity(0.32))
-                .background(.ultraThinMaterial)
-                .opacity(phase == .expanded ? 1 : 0)
-                .allowsHitTesting(false)
-                .ignoresSafeArea()
-
             VStack(spacing: 0) {
                 ZStack {
                     NotchBackground(

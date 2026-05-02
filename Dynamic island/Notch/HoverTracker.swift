@@ -21,7 +21,7 @@ final class HoverTracker: ObservableObject {
                 self?.pendingFalse = nil
             }
             pendingFalse = work
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.08, execute: work)
+            DispatchQueue.main.asyncAfter(deadline: .now() , execute: work)
         }
     }
 }

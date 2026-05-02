@@ -57,9 +57,12 @@ final class NotchWindowController {
             notchSize: notchSize
         )
 
-        let host = NSHostingView(rootView: root)
+        let host = NotchHostingView(rootView: root)
         host.frame = NSRect(origin: .zero, size: frame.size)
         host.safeAreaRegions = []
+        host.hover = hover
+        host.hotspotWidth = notchHotspotWidth
+        host.hotspotHeight = notchSize.height + 4
 
         panel.contentView = host
         panel.setFrame(frame, display: true)
@@ -90,5 +93,29 @@ final class NotchWindowController {
         }
         self.screen = screen
         panel.setFrame(computeFrame(for: screen), display: true)
+    }
+}
+
+final class NotchHostingView: NSHostingView<NotchView> {
+    weak var hover: HoverTracker?
+    var hotspotWidth: CGFloat = 0
+    var hotspotHeight: CGFloat = 0
+
+    override func hitTest(_ point: NSPoint) -> NSView? {
+        // When alcove expanded, full panel area accepts clicks.
+        if hover?.isHovered == true {
+            return super.hitTest(point)
+        }
+        // Idle/compact: only the notch hotspot near top-center is clickable.
+        // Everywhere else passes through to underlying windows.
+        let topY = bounds.height
+        let minX = (bounds.width - hotspotWidth) / 2
+        let hotspot = NSRect(
+            x: minX,
+            y: topY - hotspotHeight,
+            width: hotspotWidth,
+            height: hotspotHeight
+        )
+        return hotspot.contains(point) ? super.hitTest(point) : nil
     }
 }
