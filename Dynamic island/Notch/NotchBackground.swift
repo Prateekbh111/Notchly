@@ -16,6 +16,7 @@ struct NotchBackground: View {
         )
         shape
             .fill(.black)
+            .shadow(color: .black.opacity(0.25), radius: 8, x: 0, y: 4)
             .background {
                 shape
                     .fill(.ultraThinMaterial)

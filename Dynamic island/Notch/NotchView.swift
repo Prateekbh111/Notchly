@@ -94,7 +94,7 @@ struct NotchView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .ignoresSafeArea(.all)
-        .animation(.smooth(duration: 0.42, extraBounce: 0.22), value: phase)
+        .animation(.smooth(duration: 0.45, extraBounce: 0.18), value: phase)
         .onReceive(tick) { now in nowTick = now }
     }
 
@@ -111,7 +111,7 @@ struct NotchView: View {
                 width: geometry.width,
                 height: geometry.height
             )
-            .transition(.opacity)
+            .transition(.opacity.animation(.easeOut(duration: 0.25).delay(0.1)))
         case .titleBanner:
             TitleBannerView(
                 track: nowPlaying.snapshot.track,
@@ -120,7 +120,7 @@ struct NotchView: View {
                 width: geometry.width,
                 height: geometry.height
             )
-            .transition(.opacity)
+            .transition(.opacity.animation(.easeOut(duration: 0.25).delay(0.1)))
         case .expanded:
             ExpandedPhaseView(
                 snapshot: nowPlaying.snapshot,
@@ -129,7 +129,7 @@ struct NotchView: View {
                 width: geometry.width,
                 height: geometry.height
             )
-            .transition(.opacity)
+            .transition(.opacity.animation(.easeOut(duration: 0.25).delay(0.1)))
         }
     }
 }
