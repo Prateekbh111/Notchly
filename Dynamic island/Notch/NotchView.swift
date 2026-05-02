@@ -55,7 +55,10 @@ struct NotchView: View {
     private var geometry: Geometry {
         switch phase {
         case .idle:
-            return Geometry(width: notchSize.width, height: 0.1, bottomRadius: 0, topInvertedRadius: 0)
+            // Match physical notch dimensions so the pill visually merges
+            // with the hardware notch (both are black). No geometric jump
+            // when transitioning to compact — only width grows slightly.
+            return Geometry(width: notchSize.width, height: notchSize.height, bottomRadius: 12, topInvertedRadius: Self.topInvR)
         case .compact:
             return Geometry(width: 257, height: notchSize.height, bottomRadius: 12, topInvertedRadius: Self.topInvR)
         case .titleBanner:
