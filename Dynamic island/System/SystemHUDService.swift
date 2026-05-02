@@ -2,6 +2,7 @@ import AppKit
 import Combine
 import CoreAudio
 import Darwin
+@preconcurrency import CoreFoundation
 
 enum SystemHUDKind: Equatable {
     case volume
@@ -33,14 +34,17 @@ final class SystemHUDService: ObservableObject {
     private var currentDeviceID: AudioDeviceID = 0
 
     private var eventTap: CFMachPort?
-    private var runLoopSource: CFRunLoopSource?
+    private var tapRunLoopSource: CFRunLoopSource?
+    private var tapRunLoop: CFRunLoop?
+    private var tapThread: Thread?
 
     private var launchObserver: NSObjectProtocol?
 
     private var tapRetryTimer: DispatchSourceTimer?
 
     init() {
-        requestAccessibilityIfNeeded()
+        // Defer AX prompt — calling synchronously during init can deadlock on some macOS versions.
+        DispatchQueue.main.async { [weak self] in self?.requestAccessibilityIfNeeded() }
         setupBrightnessPolling()
         setupVolumeListener()
         attemptInstallMediaKeyTap()
@@ -87,8 +91,9 @@ final class SystemHUDService: ObservableObject {
         suppressionTimer?.cancel()
         tapRetryTimer?.cancel()
         if let tap = eventTap { CGEvent.tapEnable(tap: tap, enable: false) }
-        if let src = runLoopSource {
-            CFRunLoopRemoveSource(CFRunLoopGetMain(), src, .commonModes)
+        if let src = tapRunLoopSource, let rl = tapRunLoop {
+            CFRunLoopRemoveSource(rl, src, .commonModes)
+            CFRunLoopStop(rl)
         }
         if let obs = launchObserver {
             NSWorkspace.shared.notificationCenter.removeObserver(obs)
@@ -100,8 +105,9 @@ final class SystemHUDService: ObservableObject {
     private func installMediaKeyTap() {
         let mask: CGEventMask = 1 << 14 // NSEvent.EventType.systemDefined
         let refcon = Unmanaged.passUnretained(self).toOpaque()
+        // Use session-level tap (not HID-level) so a busy main thread never blocks system-wide input.
         guard let tap = CGEvent.tapCreate(
-            tap: .cghidEventTap,
+            tap: .cgSessionEventTap,
             place: .headInsertEventTap,
             options: .defaultTap,
             eventsOfInterest: mask,
@@ -112,11 +118,27 @@ final class SystemHUDService: ObservableObject {
             return
         }
         let source = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, tap, 0)
-        CFRunLoopAddSource(CFRunLoopGetMain(), source, .commonModes)
-        CGEvent.tapEnable(tap: tap, enable: true)
+
+        // Run on a dedicated thread — keeps tap processing off main run loop entirely.
+        let sema = DispatchSemaphore(value: 0)
+        var capturedRL: CFRunLoop?
+        let thread = Thread {
+            capturedRL = CFRunLoopGetCurrent()
+            CFRunLoopAddSource(CFRunLoopGetCurrent()!, source, .commonModes)
+            CGEvent.tapEnable(tap: tap, enable: true)
+            sema.signal()
+            CFRunLoopRun()
+        }
+        thread.name = "com.dynamicisland.eventtap"
+        thread.qualityOfService = .userInteractive
+        thread.start()
+        sema.wait()
+
+        tapThread = thread
+        tapRunLoop = capturedRL
+        tapRunLoopSource = source
         eventTap = tap
-        runLoopSource = source
-        NSLog("[HUD] CGEventTap installed")
+        NSLog("[HUD] CGEventTap installed on dedicated thread")
     }
 
     private static let tapCallback: CGEventTapCallBack = { _, type, event, refcon in

@@ -43,6 +43,8 @@ struct NotchView: View {
     // Constant top inverse radius across visible phases — keeps pill body
     // anchor invariant during shape morph, avoids vertical jump.
     private static let topInvR: CGFloat = 6
+    private static let hudLeftWidth: CGFloat = 40
+    private static let hudRightWidth: CGFloat = 100
 
     private var transitionAnimation: Animation {
         let nextRank = Self.rank(phase)
@@ -56,7 +58,8 @@ struct NotchView: View {
 
     private var geometry: Geometry {
         if hudService.hud != nil {
-            return Geometry(width: 320, height: notchSize.height, bottomRadius: 12, topInvertedRadius: Self.topInvR)
+            let hudWidth = Self.hudLeftWidth + notchSize.width + Self.hudRightWidth
+            return Geometry(width: hudWidth, height: notchSize.height, bottomRadius: 12, topInvertedRadius: Self.topInvR)
         }
         switch phase {
         case .idle:
@@ -126,6 +129,7 @@ struct NotchView: View {
                     .allowsHitTesting(false)
                 }
                 .frame(width: g.width, height: g.height)
+                .offset(x: hudService.hud != nil ? (Self.hudRightWidth - Self.hudLeftWidth) / 2 : 0)
                 .contentShape(
                     NotchShape(
                         width: g.width,
@@ -163,9 +167,10 @@ struct NotchView: View {
         if let hud = hudService.hud {
             HudPhaseView(
                 state: hud,
-                width: geometry.width,
                 height: geometry.height,
-                notchWidth: notchSize.width
+                notchWidth: notchSize.width,
+                leftWidth: Self.hudLeftWidth,
+                rightWidth: Self.hudRightWidth
             )
             .transition(.opacity.animation(.easeOut(duration: 0.2)))
         } else {

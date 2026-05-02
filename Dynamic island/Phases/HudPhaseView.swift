@@ -2,36 +2,32 @@ import SwiftUI
 
 struct HudPhaseView: View {
     let state: SystemHUDState
-    let width: CGFloat
     let height: CGFloat
     let notchWidth: CGFloat
+    let leftWidth: CGFloat
+    let rightWidth: CGFloat
 
     var body: some View {
         HStack(spacing: 0) {
-            // Left of notch — icon
             Image(systemName: iconName)
                 .font(.system(size: 14, weight: .medium))
                 .foregroundStyle(.white.opacity(0.9))
-                .frame(maxWidth: .infinity, alignment: .center)
+                .frame(width: leftWidth, height: height, alignment: .center)
                 .contentTransition(.symbolEffect(.replace))
 
-            // Notch hardware sits here
             Color.clear.frame(width: notchWidth)
 
-            // Right of notch — scrubber
-            GeometryReader { geo in
-                ZStack(alignment: .leading) {
-                    Capsule().fill(.white.opacity(0.18))
-                    Capsule()
-                        .fill(.white.opacity(0.85))
-                        .frame(width: geo.size.width * CGFloat(max(0, min(1, state.level))))
-                }
+            ZStack(alignment: .leading) {
+                Capsule().fill(.white.opacity(0.35))
+                Capsule()
+                    .fill(.white.opacity(0.9))
+                    .frame(width: (rightWidth-20) * CGFloat(max(0, min(1, state.level))))
             }
-            .frame(height: 7)
-            .frame(maxWidth: 50, alignment: .center)
-            .padding(.horizontal, 10)
+            .frame(width: rightWidth-20, height: 6)
+            .frame(height: height)
+            .padding(.horizontal, 5)
         }
-        .frame(width: width, height: height)
+        .frame(width: leftWidth + notchWidth + rightWidth, height: height)
     }
 
     private var iconName: String {
