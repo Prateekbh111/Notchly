@@ -85,17 +85,13 @@ final class NotchWindowController {
     }
 
     private func computeFrame(for screen: NSScreen) -> NSRect {
-        let width = Self.panelWidth
-        let height = Self.panelHeight
         if let leftMaxX = screen.auxiliaryTopLeftArea?.maxX,
            let rightMinX = screen.auxiliaryTopRightArea?.minX {
             notchCenterX = (leftMaxX + rightMinX) / 2
         } else {
             notchCenterX = screen.frame.midX
         }
-        let originX = notchCenterX - width / 2
-        let originY = screen.frame.maxY - height
-        return NSRect(x: originX, y: originY, width: width, height: height)
+        return screen.frame
     }
 
     private func startCursorPolling() {

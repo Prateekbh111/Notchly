@@ -71,6 +71,18 @@ struct NotchView: View {
         ZStack(alignment: .top) {
             VStack(spacing: 0) {
                 ZStack {
+                    NotchShape(
+                        width: g.width,
+                        height: g.height,
+                        bottomRadius: g.bottomRadius,
+                        topInvertedRadius: g.topInvertedRadius
+                    )
+                    .fill(.black.opacity(0.10))
+                    .background(.ultraThinMaterial)
+                    .blur(radius: 20)
+                    .opacity(phase == .expanded ? 0.9 : 0)
+                    .frame(width: g.width, height: g.height)
+                    .allowsHitTesting(false)
                     NotchBackground(
                         width: g.width,
                         height: g.height,

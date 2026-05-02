@@ -70,7 +70,7 @@ struct ExpandedPhaseView: View {
         }
         .padding(.top, notchInset-10)
         .padding(.horizontal, 20)
-        .padding(.bottom, 20)
+        .padding(.bottom, 25)
         .frame(width: width, height: height)
     }
 }
