@@ -15,17 +15,12 @@ struct ExpandedPhaseView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 12) {
-                ArtworkView(data: snapshot.track?.artwork)
+                Color.clear
                     .frame(width: 56, height: 56)
-                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 10, style: .continuous)
-                            .fill(.black.opacity(snapshot.isPlaying ? 0 : 0.35))
-                    )
-                    .opacity(snapshot.isPlaying ? 1 : 0.7)
-                    .matchedGeometryEffect(id: "artwork", in: artNamespace)
+                    .matchedGeometryEffect(id: "artwork", in: artNamespace, isSource: true)
 
                 VStack(alignment: .leading, spacing: 2) {
+                    Spacer()
                     Text(snapshot.track?.title ?? "Not Playing")
                         .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(.white)
@@ -38,9 +33,9 @@ struct ExpandedPhaseView: View {
                     }
                 }
                 Spacer()
-                EQGlyphView(isPlaying: snapshot.isPlaying)
+                Color.clear
                     .frame(width: 22, height: 22)
-                    .opacity(snapshot.isPlaying ? 1 : 0.45)
+                    .matchedGeometryEffect(id: "eq", in: artNamespace, isSource: true)
             }
 
             ScrubberView(elapsed: snapshot.elapsed, duration: snapshot.track?.duration ?? 0)
@@ -66,14 +61,14 @@ struct ExpandedPhaseView: View {
                     .buttonStyle(TransportButtonStyle())
                 }
                 OutputPickerButton(controller: outputPicker)
-                    .frame(width: 30, height: 30)
+                    .frame(width: 40, height: 40)
                     .opacity(0.4).padding(.leading, 20)
             }
             .buttonStyle(.plain)
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity)
         }
-        .padding(.top, notchInset)
+        .padding(.top, notchInset-10)
         .padding(.horizontal, 20)
         .padding(.bottom, 30)
         .frame(width: width, height: height)

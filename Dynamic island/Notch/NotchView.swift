@@ -59,9 +59,9 @@ struct NotchView: View {
         case .compact:
             return Geometry(width: 257, height: notchSize.height, bottomRadius: 12, topInvertedRadius: Self.topInvR)
         case .titleBanner:
-            return Geometry(width: 257, height: 60, bottomRadius: 22, topInvertedRadius: Self.topInvR)
+            return Geometry(width: 257, height: 60, bottomRadius: 20, topInvertedRadius: Self.topInvR)
         case .expanded:
-            return Geometry(width: 345, height: 174, bottomRadius: 44, topInvertedRadius: Self.topInvR)
+            return Geometry(width: 345, height: 174, bottomRadius: 40, topInvertedRadius: Self.topInvR+4)
         }
     }
 
@@ -87,6 +87,37 @@ struct NotchView: View {
                                 topInvertedRadius: 0
                             )
                         )
+                    SharedArtwork(
+                        snapshot: nowPlaying.snapshot,
+                        namespace: artNamespace,
+                        cornerRadius: phase == .expanded ? 10 : 6,
+                        visible: phase != .idle
+                    )
+                    .frame(width: g.width, height: g.height, alignment: .top)
+                    .clipShape(
+                        NotchShape(
+                            width: g.width,
+                            height: g.height,
+                            bottomRadius: g.bottomRadius,
+                            topInvertedRadius: 0
+                        )
+                    )
+                    .allowsHitTesting(false)
+                    SharedEQ(
+                        isPlaying: nowPlaying.snapshot.isPlaying,
+                        namespace: artNamespace,
+                        visible: phase != .idle
+                    )
+                    .frame(width: g.width, height: g.height, alignment: .top)
+                    .clipShape(
+                        NotchShape(
+                            width: g.width,
+                            height: g.height,
+                            bottomRadius: g.bottomRadius,
+                            topInvertedRadius: 0
+                        )
+                    )
+                    .allowsHitTesting(false)
                 }
                 .frame(width: g.width, height: g.height)
                 .contentShape(
@@ -155,5 +186,35 @@ struct NotchView: View {
             )
             .transition(.opacity.animation(.easeOut(duration: 0.25).delay(0.1)))
         }
+    }
+}
+
+private struct SharedArtwork: View {
+    let snapshot: NowPlayingSnapshot
+    let namespace: Namespace.ID
+    let cornerRadius: CGFloat
+    let visible: Bool
+
+    var body: some View {
+        ArtworkView(data: snapshot.track?.artwork)
+            .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .fill(.black.opacity(snapshot.isPlaying ? 0 : 0.35))
+            )
+            .opacity(visible ? (snapshot.isPlaying ? 1 : 0.7) : 0)
+            .matchedGeometryEffect(id: "artwork", in: namespace, isSource: false)
+    }
+}
+
+private struct SharedEQ: View {
+    let isPlaying: Bool
+    let namespace: Namespace.ID
+    let visible: Bool
+
+    var body: some View {
+        EQGlyphView(isPlaying: isPlaying)
+            .opacity(visible ? (isPlaying ? 1 : 0.45) : 0)
+            .matchedGeometryEffect(id: "eq", in: namespace, isSource: false)
     }
 }
