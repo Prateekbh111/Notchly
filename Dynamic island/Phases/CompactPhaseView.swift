@@ -11,16 +11,16 @@ struct CompactPhaseView: View {
     var body: some View {
         HStack {
             ArtworkView(data: track?.artwork)
-                .frame(width: height - 12, height: height - 12)
-                .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+                .frame(width: max(0, height - 4), height: max(0, height - 4))
+                .clipShape(Circle())
                 .matchedGeometryEffect(id: "artwork", in: artNamespace)
 
             Spacer()
 
             EQGlyphView(isPlaying: isPlaying)
-                .frame(width: 18, height: height - 16)
+                .frame(width: max(0, height - 6), height: max(0, height - 6))
         }
-        .padding(.horizontal, 14)
+        .padding(.horizontal, 10)
         .frame(width: width, height: height)
     }
 }

@@ -64,7 +64,12 @@ struct NotchView: View {
                 topInvertedRadius: Self.topInvR
             )
         case .compact:
-            return Geometry(width: 257, height: notchSize.height, bottomRadius: 12, topInvertedRadius: Self.topInvR)
+            return Geometry(
+                width: 257,
+                height: notchSize.height - Self.topInvR,
+                bottomRadius: min(12, (notchSize.height - Self.topInvR) / 2),
+                topInvertedRadius: Self.topInvR
+            )
         case .titleBanner:
             return Geometry(width: 276, height: 74, bottomRadius: 22, topInvertedRadius: Self.topInvR)
         case .expanded:
