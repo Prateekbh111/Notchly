@@ -28,14 +28,16 @@ struct NotchShape: Shape {
         var p = Path()
         let W = max(0, width)
         let H = max(0, height)
-        let tR = max(0, topInvertedRadius)
+        let tR = max(0, min(topInvertedRadius, H / 2))
         let bR = max(0, min(bottomRadius, min(W, H) / 2))
 
-        // Shoulders extend from y=-tR to y=0 above pill body.
-        p.move(to: CGPoint(x: -tR, y: -tR))
-        p.addLine(to: CGPoint(x: W + tR, y: -tR))
+        // Body fills frame y=0..H. Shoulders are lateral-only extensions
+        // outside frame at x=-tR..0 and x=W..W+tR, y=0..tR.
+
+        p.move(to: CGPoint(x: -tR, y: 0))
+        p.addLine(to: CGPoint(x: W + tR, y: 0))
         p.addArc(
-            center: CGPoint(x: W + tR, y: 0),
+            center: CGPoint(x: W + tR, y: tR),
             radius: tR,
             startAngle: .degrees(270),
             endAngle: .degrees(180),
@@ -57,9 +59,9 @@ struct NotchShape: Shape {
             endAngle: .degrees(180),
             clockwise: false
         )
-        p.addLine(to: CGPoint(x: 0, y: 0))
+        p.addLine(to: CGPoint(x: 0, y: tR))
         p.addArc(
-            center: CGPoint(x: -tR, y: 0),
+            center: CGPoint(x: -tR, y: tR),
             radius: tR,
             startAngle: .degrees(0),
             endAngle: .degrees(270),

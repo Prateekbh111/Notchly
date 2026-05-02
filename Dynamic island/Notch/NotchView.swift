@@ -55,21 +55,9 @@ struct NotchView: View {
     private var geometry: Geometry {
         switch phase {
         case .idle:
-            // Total visible height (shoulder + body) equals the physical
-            // notch height. Pill silhouette matches hardware notch exactly.
-            return Geometry(
-                width: notchSize.width,
-                height: max(0.1, notchSize.height - Self.topInvR),
-                bottomRadius: min(12, (notchSize.height - Self.topInvR) / 2),
-                topInvertedRadius: Self.topInvR
-            )
+            return Geometry(width: notchSize.width, height: notchSize.height, bottomRadius: 12, topInvertedRadius: Self.topInvR)
         case .compact:
-            return Geometry(
-                width: 257,
-                height: notchSize.height - Self.topInvR,
-                bottomRadius: min(12, (notchSize.height - Self.topInvR) / 2),
-                topInvertedRadius: Self.topInvR
-            )
+            return Geometry(width: 257, height: notchSize.height, bottomRadius: 12, topInvertedRadius: Self.topInvR)
         case .titleBanner:
             return Geometry(width: 276, height: 74, bottomRadius: 22, topInvertedRadius: Self.topInvR)
         case .expanded:
@@ -101,7 +89,6 @@ struct NotchView: View {
                         )
                 }
                 .frame(width: g.width, height: g.height)
-                .padding(.top, Self.topInvR)
                 .contentShape(
                     NotchShape(
                         width: g.width,
