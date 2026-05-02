@@ -41,10 +41,10 @@ struct ExpandedPhaseView: View {
             ScrubberView(elapsed: snapshot.elapsed, duration: snapshot.track?.duration ?? 0)
 
             HStack {
-                Button(action: { transport.toggleShuffle() }) {
-                    Image(systemName: "shuffle").font(.system(size: 16))
-                }
-                .opacity(0.4).padding(.trailing, 20)
+//                Button(action: { transport.toggleShuffle() }) {
+//                    Image(systemName: "shuffle").font(.system(size: 16))
+//                }
+//                .opacity(0.4).padding(.trailing, 20)
                 HStack(spacing: 26) {
                     Button(action: { transport.previous() }) {
                         Image(systemName: "backward.fill").font(.system(size: 23)).opacity(0.7)
@@ -60,9 +60,9 @@ struct ExpandedPhaseView: View {
                     }
                     .buttonStyle(TransportButtonStyle())
                 }
-                OutputPickerButton(controller: outputPicker)
-                    .frame(width: 40, height: 40)
-                    .opacity(0.4).padding(.leading, 20)
+//                OutputPickerButton(controller: outputPicker)
+//                    .frame(width: 40, height: 40)
+//                    .opacity(0.4).padding(.leading, 20)
             }
             .buttonStyle(.plain)
             .foregroundStyle(.white)
@@ -70,7 +70,7 @@ struct ExpandedPhaseView: View {
         }
         .padding(.top, notchInset-10)
         .padding(.horizontal, 20)
-        .padding(.bottom, 30)
+        .padding(.bottom, 20)
         .frame(width: width, height: height)
     }
 }

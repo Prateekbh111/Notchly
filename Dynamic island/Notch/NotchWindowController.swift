@@ -13,6 +13,12 @@ final class NotchWindowController {
     private let hover: HoverTracker
     private var screen: NSScreen
 
+    private var notchCenterX: CGFloat = 0
+    private var hotspotSize: CGSize = .zero
+    private var expandedSize: CGSize = CGSize(width: 360, height: 200)
+
+    private var cursorTimer: DispatchSourceTimer?
+
     init(
         screen: NSScreen,
         nowPlaying: NowPlayingService,
@@ -32,9 +38,14 @@ final class NotchWindowController {
         )
     }
 
+    deinit {
+        cursorTimer?.cancel()
+    }
+
     func show() {
         let frame = computeFrame(for: screen)
         let panel = NotchPanel(contentRect: frame)
+        panel.ignoresMouseEvents = true
 
         let notchSize: CGSize = {
             if let leftMaxX = screen.auxiliaryTopLeftArea?.maxX,
@@ -47,34 +58,35 @@ final class NotchWindowController {
             return CGSize(width: 200, height: 32)
         }()
 
-        let notchHotspotWidth: CGFloat = notchSize.width + 40
+        let notchHotspotWidth: CGFloat = notchSize.width + 60
+        let notchHotspotHeight: CGFloat = notchSize.height
+        hotspotSize = CGSize(width: notchHotspotWidth, height: notchHotspotHeight)
 
         let root = NotchView(
             nowPlaying: nowPlaying,
             transport: transport,
             hover: hover,
             notchHotspotWidth: notchHotspotWidth,
+            notchHotspotHeight: notchHotspotHeight,
             notchSize: notchSize
         )
 
-        let host = NotchHostingView(rootView: root)
+        let host = NSHostingView(rootView: root)
         host.frame = NSRect(origin: .zero, size: frame.size)
         host.safeAreaRegions = []
-        host.hover = hover
-        host.hotspotWidth = notchHotspotWidth
-        host.hotspotHeight = notchSize.height + 4
 
         panel.contentView = host
         panel.setFrame(frame, display: true)
         panel.orderFrontRegardless()
 
         self.panel = panel
+
+        startCursorPolling()
     }
 
     private func computeFrame(for screen: NSScreen) -> NSRect {
         let width = Self.panelWidth
         let height = Self.panelHeight
-        let notchCenterX: CGFloat
         if let leftMaxX = screen.auxiliaryTopLeftArea?.maxX,
            let rightMinX = screen.auxiliaryTopRightArea?.minX {
             notchCenterX = (leftMaxX + rightMinX) / 2
@@ -86,6 +98,51 @@ final class NotchWindowController {
         return NSRect(x: originX, y: originY, width: width, height: height)
     }
 
+    private func startCursorPolling() {
+        cursorTimer?.cancel()
+        let timer = DispatchSource.makeTimerSource(queue: .main)
+        timer.schedule(deadline: .now(), repeating: 1.0 / 120.0, leeway: .milliseconds(1))
+        timer.setEventHandler { [weak self] in
+            MainActor.assumeIsolated { self?.updateHoverFromCursor() }
+        }
+        timer.activate()
+        cursorTimer = timer
+        updateHoverFromCursor()
+    }
+
+    private func updateHoverFromCursor() {
+        guard let panel else { return }
+        let mouse = NSEvent.mouseLocation
+        let activeScreen = NSScreen.screens.first(where: { $0.frame.contains(mouse) })
+            ?? NSScreen.screens.first(where: { $0.frame.maxY >= mouse.y })
+            ?? screen
+        let inside = isCursorInHoverRegion(mouse: mouse, on: activeScreen)
+        if hover.isHovered != inside {
+            hover.setHovered(inside)
+        }
+        if panel.ignoresMouseEvents != !inside {
+            panel.ignoresMouseEvents = !inside
+        }
+    }
+
+    private func isCursorInHoverRegion(mouse: NSPoint, on screen: NSScreen) -> Bool {
+        let topY = screen.frame.maxY
+        let centerX: CGFloat
+        if let leftMaxX = screen.auxiliaryTopLeftArea?.maxX,
+           let rightMinX = screen.auxiliaryTopRightArea?.minX {
+            centerX = (leftMaxX + rightMinX) / 2
+        } else {
+            centerX = screen.frame.midX
+        }
+        let size = hover.isHovered ? expandedSize : hotspotSize
+        let halfW = size.width / 2
+        // Open-top check: any cursor above bottomY and within horizontal band
+        // counts. Catches cursor pegged at top edge (y == topY) and slight
+        // overshoots from fast moves.
+        let bottomY = topY - size.height
+        return mouse.y >= bottomY && abs(mouse.x - centerX) <= halfW
+    }
+
     @objc private func screensChanged() {
         guard let panel = panel,
               let screen = NSScreen.screens.first(where: { $0.safeAreaInsets.top > 0 }) else {
@@ -93,29 +150,5 @@ final class NotchWindowController {
         }
         self.screen = screen
         panel.setFrame(computeFrame(for: screen), display: true)
-    }
-}
-
-final class NotchHostingView: NSHostingView<NotchView> {
-    weak var hover: HoverTracker?
-    var hotspotWidth: CGFloat = 0
-    var hotspotHeight: CGFloat = 0
-
-    override func hitTest(_ point: NSPoint) -> NSView? {
-        // When alcove expanded, full panel area accepts clicks.
-        if hover?.isHovered == true {
-            return super.hitTest(point)
-        }
-        // Idle/compact: only the notch hotspot near top-center is clickable.
-        // Everywhere else passes through to underlying windows.
-        let topY = bounds.height
-        let minX = (bounds.width - hotspotWidth) / 2
-        let hotspot = NSRect(
-            x: minX,
-            y: topY - hotspotHeight,
-            width: hotspotWidth,
-            height: hotspotHeight
-        )
-        return hotspot.contains(point) ? super.hitTest(point) : nil
     }
 }

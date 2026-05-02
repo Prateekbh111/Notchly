@@ -7,6 +7,7 @@ struct NotchView: View {
     let transport: TransportController
     @ObservedObject var hover: HoverTracker
     let notchHotspotWidth: CGFloat
+    let notchHotspotHeight: CGFloat
     let notchSize: CGSize
     @Namespace private var artNamespace
 
@@ -136,7 +137,7 @@ struct NotchView: View {
             }
 
             Color.clear
-                .frame(width: notchHotspotWidth, height: notchSize.height + 4)
+            .frame(width: notchHotspotWidth, height: notchHotspotHeight)
                 .contentShape(Rectangle())
                 .onHover { isHovered in
                     if isHovered { hover.setHovered(true) }
