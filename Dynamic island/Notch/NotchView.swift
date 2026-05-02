@@ -11,7 +11,17 @@ struct NotchView: View {
     @Namespace private var artNamespace
 
     @State private var nowTick: Date = Date()
+    @State private var previousPhaseRank: Int = 0
     private let tick = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
+
+    private static func rank(_ phase: Phase) -> Int {
+        switch phase {
+        case .idle:        return 0
+        case .compact:     return 1
+        case .titleBanner: return 2
+        case .expanded:    return 3
+        }
+    }
 
     private var phase: Phase {
         PhaseReducer.reduce(
@@ -31,6 +41,16 @@ struct NotchView: View {
     // Constant top inverse radius across visible phases — keeps pill body
     // anchor invariant during shape morph, avoids vertical jump.
     private static let topInvR: CGFloat = 12
+
+    private var transitionAnimation: Animation {
+        let nextRank = Self.rank(phase)
+        let isExpanding = nextRank > previousPhaseRank
+        if isExpanding {
+            return .smooth(duration: 0.45, extraBounce: 0.18)
+        } else {
+            return .spring(response: 0.32, dampingFraction: 0.92)
+        }
+    }
 
     private var geometry: Geometry {
         switch phase {
@@ -69,7 +89,7 @@ struct NotchView: View {
                         )
                 }
                 .frame(width: g.width, height: g.height)
-                .padding(.top, phase == .idle ? 0 : Self.topInvR)
+                .padding(.top, Self.topInvR)
                 .contentShape(
                     NotchShape(
                         width: g.width,
@@ -94,8 +114,11 @@ struct NotchView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .ignoresSafeArea(.all)
-        .animation(.smooth(duration: 0.45, extraBounce: 0.18), value: phase)
+        .animation(transitionAnimation, value: phase)
         .onReceive(tick) { now in nowTick = now }
+        .onChange(of: phase) { _, newPhase in
+            previousPhaseRank = Self.rank(newPhase)
+        }
     }
 
     @ViewBuilder
