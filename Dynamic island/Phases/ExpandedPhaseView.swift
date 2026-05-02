@@ -8,20 +8,26 @@ struct ExpandedPhaseView: View {
     let artNamespace: Namespace.ID
     let width: CGFloat
     let height: CGFloat
+    let notchInset: CGFloat
 
     private let outputPicker = OutputPickerController()
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 12) {
                 ArtworkView(data: snapshot.track?.artwork)
                     .frame(width: 56, height: 56)
                     .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .fill(.black.opacity(snapshot.isPlaying ? 0 : 0.35))
+                    )
+                    .opacity(snapshot.isPlaying ? 1 : 0.7)
                     .matchedGeometryEffect(id: "artwork", in: artNamespace)
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(snapshot.track?.title ?? "Not Playing")
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(.white)
                         .lineLimit(1)
                     if let artist = snapshot.track?.artist, !artist.isEmpty {
@@ -34,32 +40,38 @@ struct ExpandedPhaseView: View {
                 Spacer()
                 EQGlyphView(isPlaying: snapshot.isPlaying)
                     .frame(width: 22, height: 22)
+                    .opacity(snapshot.isPlaying ? 1 : 0.45)
             }
 
             ScrubberView(elapsed: snapshot.elapsed, duration: snapshot.track?.duration ?? 0)
 
-            HStack(spacing: 22) {
+            HStack(spacing: 0) {
                 Button(action: { transport.toggleShuffle() }) {
                     Image(systemName: "shuffle").font(.system(size: 14))
                 }
-                Button(action: { transport.previous() }) {
-                    Image(systemName: "backward.fill").font(.system(size: 18))
+                Spacer()
+                HStack(spacing: 26) {
+                    Button(action: { transport.previous() }) {
+                        Image(systemName: "backward.fill").font(.system(size: 20))
+                    }
+                    Button(action: { transport.playPause() }) {
+                        Image(systemName: snapshot.isPlaying ? "pause.fill" : "play.fill")
+                            .font(.system(size: 28, weight: .regular))
+                    }
+                    Button(action: { transport.next() }) {
+                        Image(systemName: "forward.fill").font(.system(size: 20))
+                    }
                 }
-                Button(action: { transport.playPause() }) {
-                    Image(systemName: snapshot.isPlaying ? "pause.fill" : "play.fill")
-                        .font(.system(size: 24))
-                }
-                Button(action: { transport.next() }) {
-                    Image(systemName: "forward.fill").font(.system(size: 18))
-                }
+                Spacer()
                 OutputPickerButton(controller: outputPicker)
             }
             .buttonStyle(.plain)
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity)
         }
+        .padding(.top, notchInset)
         .padding(.horizontal, 16)
-        .padding(.vertical, 14)
+        .padding(.bottom, 14)
         .frame(width: width, height: height)
     }
 }
@@ -102,21 +114,21 @@ private struct ScrubberView: View {
     let duration: TimeInterval
 
     var body: some View {
-        VStack(spacing: 6) {
+        VStack(spacing: 4) {
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
                     Capsule().fill(.white.opacity(0.2))
                     Capsule().fill(.white).frame(width: geo.size.width * progress)
                 }
             }
-            .frame(height: 5)
+            .frame(height: 4)
 
             HStack {
                 Text(format(elapsed))
                 Spacer()
                 Text("-" + format(max(0, duration - elapsed)))
             }
-            .font(.system(size: 12))
+            .font(.system(size: 11))
             .foregroundStyle(.white.opacity(0.6))
         }
     }

@@ -68,6 +68,14 @@ struct NotchView: View {
     var body: some View {
         let g = geometry
         ZStack(alignment: .top) {
+            // Backdrop scrim — dim+blur the screen while expanded (hover).
+            Rectangle()
+                .fill(.black.opacity(0.32))
+                .background(.ultraThinMaterial)
+                .opacity(phase == .expanded ? 1 : 0)
+                .allowsHitTesting(false)
+                .ignoresSafeArea()
+
             VStack(spacing: 0) {
                 ZStack {
                     NotchBackground(
@@ -140,7 +148,8 @@ struct NotchView: View {
                 isPlaying: nowPlaying.snapshot.isPlaying,
                 artNamespace: artNamespace,
                 width: geometry.width,
-                height: geometry.height
+                height: geometry.height,
+                notchInset: notchSize.height
             )
             .transition(.opacity.animation(.easeOut(duration: 0.25).delay(0.1)))
         case .expanded:
@@ -149,7 +158,8 @@ struct NotchView: View {
                 transport: transport,
                 artNamespace: artNamespace,
                 width: geometry.width,
-                height: geometry.height
+                height: geometry.height,
+                notchInset: notchSize.height
             )
             .transition(.opacity.animation(.easeOut(duration: 0.25).delay(0.1)))
         }

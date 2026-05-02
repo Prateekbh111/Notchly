@@ -7,12 +7,18 @@ struct TitleBannerView: View {
     let artNamespace: Namespace.ID
     let width: CGFloat
     let height: CGFloat
+    let notchInset: CGFloat
 
     var body: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: 12) {
             ArtworkView(data: track?.artwork)
-                .frame(width: 40, height: 40)
+                .frame(width: 36, height: 36)
                 .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        .fill(.black.opacity(isPlaying ? 0 : 0.4))
+                )
+                .opacity(isPlaying ? 1 : 0.6)
                 .matchedGeometryEffect(id: "artwork", in: artNamespace)
 
             VStack(alignment: .leading, spacing: 1) {
@@ -29,9 +35,11 @@ struct TitleBannerView: View {
 
             EQGlyphView(isPlaying: isPlaying)
                 .frame(width: 18, height: 18)
+                .opacity(isPlaying ? 1 : 0.45)
         }
+        .padding(.top, notchInset)
         .padding(.horizontal, 12)
-        .padding(.vertical, 10)
+        .padding(.bottom, 8)
         .frame(width: width, height: height)
     }
 }
