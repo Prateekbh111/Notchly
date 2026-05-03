@@ -2,11 +2,13 @@ import AppKit
 import Combine
 import CoreAudio
 import Darwin
+import DynamicIslandCore
 @preconcurrency import CoreFoundation
 
 enum SystemHUDKind: Equatable {
     case volume
     case brightness
+    case bluetooth(BluetoothBannerPayload)
 }
 
 struct SystemHUDState: Equatable {
@@ -358,6 +360,15 @@ final class SystemHUDService: ObservableObject {
 
     // MARK: - HUD show / auto-hide
 
+    func showBluetoothBanner(_ payload: BluetoothBannerPayload) {
+        let state = SystemHUDState(
+            kind: .bluetooth(payload),
+            level: 0,
+            muted: false
+        )
+        show(state)
+    }
+
     private func show(_ state: SystemHUDState) {
         hud = state
         hideWorkItem?.cancel()
@@ -366,6 +377,11 @@ final class SystemHUDService: ObservableObject {
             self?.hideWorkItem = nil
         }
         hideWorkItem = work
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5, execute: work)
+        let delay: TimeInterval
+        switch state.kind {
+        case .bluetooth: delay = 3.0
+        case .volume, .brightness: delay = 1.5
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: work)
     }
 }
