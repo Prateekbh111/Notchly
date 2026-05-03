@@ -45,7 +45,7 @@ struct NotchView: View {
     private static let topInvR: CGFloat = 6
     private static let hudLeftWidth: CGFloat = 40
     private static let hudRightWidth: CGFloat = 100
-    private static let btSideWidth: CGFloat = 70
+    private static let btSideWidth: CGFloat = 40
 
     private var hudLeftWidth: CGFloat {
         if case .bluetooth = hudService.hud?.kind { return Self.btSideWidth }
