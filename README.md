@@ -2,7 +2,7 @@
 
 iOS-style Dynamic Island for MacBooks with a hardware notch. Native SwiftUI, runs as a menu-bar app, no internet, no telemetry.
 
-<video src="https://github.com/Prateekbh111/Notchly/raw/main/demo.mp4" controls width="100%"></video>
+![demo](demo.gif)
 
 ## Features
 
