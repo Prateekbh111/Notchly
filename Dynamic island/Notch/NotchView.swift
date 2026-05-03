@@ -45,6 +45,16 @@ struct NotchView: View {
     private static let topInvR: CGFloat = 6
     private static let hudLeftWidth: CGFloat = 40
     private static let hudRightWidth: CGFloat = 100
+    private static let btSideWidth: CGFloat = 70
+
+    private var hudLeftWidth: CGFloat {
+        if case .bluetooth = hudService.hud?.kind { return Self.btSideWidth }
+        return Self.hudLeftWidth
+    }
+    private var hudRightWidth: CGFloat {
+        if case .bluetooth = hudService.hud?.kind { return Self.btSideWidth }
+        return Self.hudRightWidth
+    }
 
     private var transitionAnimation: Animation {
         let nextRank = Self.rank(phase)
@@ -58,7 +68,7 @@ struct NotchView: View {
 
     private var geometry: Geometry {
         if hudService.hud != nil {
-            let hudWidth = Self.hudLeftWidth + notchSize.width + Self.hudRightWidth
+            let hudWidth = hudLeftWidth + notchSize.width + hudRightWidth
             return Geometry(width: hudWidth, height: notchSize.height, bottomRadius: 12, topInvertedRadius: Self.topInvR)
         }
         switch phase {
@@ -129,7 +139,7 @@ struct NotchView: View {
                     .allowsHitTesting(false)
                 }
                 .frame(width: g.width, height: g.height)
-                .offset(x: hudService.hud != nil ? (Self.hudRightWidth - Self.hudLeftWidth) / 2 : 0)
+                .offset(x: hudService.hud != nil ? (hudRightWidth - hudLeftWidth) / 2 : 0)
                 .contentShape(
                     NotchShape(
                         width: g.width,
@@ -169,8 +179,8 @@ struct NotchView: View {
                 state: hud,
                 height: geometry.height,
                 notchWidth: notchSize.width,
-                leftWidth: Self.hudLeftWidth,
-                rightWidth: Self.hudRightWidth
+                leftWidth: hudLeftWidth,
+                rightWidth: hudRightWidth
             )
             .transition(.opacity.animation(.easeOut(duration: 0.2)))
         } else {

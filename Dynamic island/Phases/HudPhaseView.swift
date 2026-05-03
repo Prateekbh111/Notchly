@@ -41,8 +41,8 @@ struct HudPhaseView: View {
         case .bluetooth(let payload):
             if let level = payload.battery.displayLevel {
                 BatteryRing(level: level)
-                    .frame(width: 20, height: 20)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(width: 22, height: 22)
+                    .frame(maxWidth: .infinity, alignment: .center)
             } else {
                 Color.clear
             }
@@ -97,8 +97,6 @@ private struct BatteryRing: View {
     }
 
     private var ringColor: Color {
-        if level <= 0.20 { return .red.opacity(0.95) }
-        if level <= 0.40 { return .yellow.opacity(0.95) }
-        return .white.opacity(0.95)
+        Color(red: 0.30, green: 0.85, blue: 0.40)
     }
 }
