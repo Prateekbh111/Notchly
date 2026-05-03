@@ -8,6 +8,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var transport: TransportController?
     private var hover: HoverTracker?
     private var hudService: SystemHUDService?
+    private var bluetoothMonitor: BluetoothMonitorService?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         guard let screen = NSScreen.screens.first(where: { $0.safeAreaInsets.top > 0 }) else {
@@ -21,6 +22,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let transport = TransportController(bridge: bridge)
         let hover = HoverTracker()
         let hudService = SystemHUDService()
+        let bluetoothMonitor = BluetoothMonitorService(hudService: hudService)
+        bluetoothMonitor.start()
 
         let controller = NotchWindowController(
             screen: screen,
@@ -35,6 +38,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         self.transport = transport
         self.hover = hover
         self.hudService = hudService
+        self.bluetoothMonitor = bluetoothMonitor
         self.windowController = controller
     }
 
