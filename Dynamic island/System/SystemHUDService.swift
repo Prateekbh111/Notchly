@@ -131,7 +131,7 @@ final class SystemHUDService: ObservableObject {
             sema.signal()
             CFRunLoopRun()
         }
-        thread.name = "com.dynamicisland.eventtap"
+        thread.name = "com.notchly.eventtap"
         thread.qualityOfService = .userInteractive
         thread.start()
         sema.wait()

@@ -58,7 +58,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func presentNoNotchAlert() {
         let alert = NSAlert()
         alert.messageText = "Notch required"
-        alert.informativeText = "Dynamic Island requires a MacBook with a notch."
+        alert.informativeText = "Notchly requires a MacBook with a notch."
         alert.alertStyle = .warning
         alert.addButton(withTitle: "Quit")
         alert.runModal()

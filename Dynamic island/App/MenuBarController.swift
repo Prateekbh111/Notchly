@@ -4,7 +4,7 @@ import AppKit
 final class MenuBarController: NSObject {
     private let statusItem: NSStatusItem
     private let onToggle: (Bool) -> Void
-    private let enabledKey = "com.dynamicisland.enabled"
+    private let enabledKey = "com.notchly.enabled"
 
     private(set) var isEnabled: Bool
 
@@ -21,7 +21,7 @@ final class MenuBarController: NSObject {
         guard let button = statusItem.button else { return }
         button.image = NSImage(
             systemSymbolName: "rectangle.tophalf.inset.filled",
-            accessibilityDescription: "Dynamic Island"
+            accessibilityDescription: "Notchly"
         )
         button.image?.isTemplate = true
     }
@@ -30,7 +30,7 @@ final class MenuBarController: NSObject {
         let menu = NSMenu()
 
         let toggle = NSMenuItem(
-            title: isEnabled ? "Disable Dynamic Island" : "Enable Dynamic Island",
+            title: isEnabled ? "Disable Notchly" : "Enable Notchly",
             action: #selector(toggleEnabled),
             keyEquivalent: ""
         )
