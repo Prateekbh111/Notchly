@@ -43,4 +43,29 @@ final class IconResolverTests: XCTestCase {
         let kind = IconResolver.resolve(vendorID: 0x1234, productID: 0x5678, classOfDevice: 0)
         XCTAssertEqual(kind, .genericHeadphones)
     }
+
+    func test_resolveByName_airpodsPro() {
+        XCTAssertEqual(IconResolver.resolveByName("Prateek's AirPods Pro", classOfDevice: 0), .airpodsPro)
+    }
+
+    func test_resolveByName_airpodsMax() {
+        XCTAssertEqual(IconResolver.resolveByName("AirPods Max", classOfDevice: 0), .airpodsMax)
+    }
+
+    func test_resolveByName_airpodsBase() {
+        XCTAssertEqual(IconResolver.resolveByName("Prateek's AirPods", classOfDevice: 0), .airpods)
+    }
+
+    func test_resolveByName_powerbeatsPro_isEarbuds() {
+        XCTAssertEqual(IconResolver.resolveByName("Powerbeats Pro", classOfDevice: 0), .beatsEarbuds)
+    }
+
+    func test_resolveByName_beatsStudio_isHeadphones() {
+        XCTAssertEqual(IconResolver.resolveByName("Beats Studio3", classOfDevice: 0), .beatsHeadphones)
+    }
+
+    func test_resolveByName_genericFallsBackToCoD() {
+        let cod: UInt32 = (0x04 << 8) | (0x05 << 2)
+        XCTAssertEqual(IconResolver.resolveByName("UE Boom", classOfDevice: cod), .genericSpeaker)
+    }
 }

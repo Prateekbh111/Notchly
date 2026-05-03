@@ -43,4 +43,26 @@ public enum IconResolver {
 
         return .genericHeadphones
     }
+
+    /// Name-based fallback when vendor/product IDs are unavailable
+    /// (`IOBluetoothDevice` doesn't expose them on public API).
+    public static func resolveByName(
+        _ name: String,
+        classOfDevice: UInt32
+    ) -> BluetoothIconKind {
+        let lower = name.lowercased()
+
+        if lower.contains("airpods pro") { return .airpodsPro }
+        if lower.contains("airpods max") { return .airpodsMax }
+        if lower.contains("airpods")     { return .airpods }
+
+        if lower.contains("powerbeats pro") || lower.contains("beats fit") || lower.contains("beats studio buds") {
+            return .beatsEarbuds
+        }
+        if lower.contains("beats") {
+            return .beatsHeadphones
+        }
+
+        return resolve(vendorID: 0, productID: 0, classOfDevice: classOfDevice)
+    }
 }
