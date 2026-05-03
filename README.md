@@ -24,7 +24,9 @@ iOS-style Dynamic Island for MacBooks with a hardware notch. Native SwiftUI, run
 
 ## Install (pre-built zip)
 
-1. Unzip `Notchly-YYYY-MM-DD.zip` to `/Applications`.
+**Download:** [Notchly-2026-05-03.zip](https://github.com/Prateekbh111/Notchly/raw/main/dist/Notchly-2026-05-03.zip)
+
+1. Unzip to `/Applications`.
 2. First launch: right-click `Notchly.app` → **Open** to bypass Gatekeeper (binary is ad-hoc signed only).
 3. Grant Bluetooth permission on first AirPods connect.
 4. Optional: grant Accessibility (System Settings → Privacy & Security → Accessibility) so the system HUD can intercept volume/brightness keys.
