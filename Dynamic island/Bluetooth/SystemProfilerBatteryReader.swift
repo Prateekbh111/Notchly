@@ -69,7 +69,7 @@ actor SystemProfilerBatteryReader {
     }
 
     private func ingest(deviceInfo info: [String: Any], now: Date) {
-        guard let address = info["device_addr"] as? String else { return }
+        guard let address = info["device_address"] as? String else { return }
         let key = normalize(address)
 
         let main = batteryInt(info["device_batteryLevelMain"])
