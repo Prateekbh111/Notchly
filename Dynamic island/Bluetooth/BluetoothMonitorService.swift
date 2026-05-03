@@ -71,11 +71,13 @@ final class BluetoothMonitorService: NSObject {
 
         let composite = CompositeBatteryReader(fastPath: fastPath, fallback: fallback)
 
+        var lastReading: BatteryReading = .unknown
         await composite.read(
             deviceID: mac,
             vendorID: 0,
             productID: 0
         ) { [weak self] reading in
+            lastReading = reading
             Task { @MainActor [weak self] in
                 let payload = BluetoothBannerPayload(
                     deviceID: mac,
@@ -84,6 +86,24 @@ final class BluetoothMonitorService: NSObject {
                     battery: reading
                 )
                 self?.hudService?.showBluetoothBanner(payload)
+            }
+        }
+
+        // Race fallback: bluetoothd publishes battery to system_profiler with a
+        // small delay after pairing. If still unknown, retry once after 1.5s.
+        if lastReading == .unknown {
+            try? await Task.sleep(nanoseconds: 1_500_000_000)
+            let retry = await profilerReader.forceRefresh(deviceID: mac)
+            if retry != .unknown {
+                await MainActor.run {
+                    let payload = BluetoothBannerPayload(
+                        deviceID: mac,
+                        displayName: name,
+                        iconKind: icon,
+                        battery: retry
+                    )
+                    self.hudService?.showBluetoothBanner(payload)
+                }
             }
         }
     }

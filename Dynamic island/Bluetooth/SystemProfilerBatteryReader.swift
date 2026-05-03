@@ -32,11 +32,22 @@ actor SystemProfilerBatteryReader {
         return cache[key]?.reading ?? .unknown
     }
 
+    /// Force a refresh ignoring the cache (used for retry after pairing/connect race).
+    func forceRefresh(deviceID: String) async -> BatteryReading {
+        let key = normalize(deviceID)
+        cache[key] = nil
+        let task = Task { await refreshCache() }
+        inFlight = task
+        await task.value
+        inFlight = nil
+        return cache[key]?.reading ?? .unknown
+    }
+
     private func refreshCache() async {
         let json: Data? = await Task.detached(priority: .userInitiated) {
             let proc = Process()
             proc.executableURL = URL(fileURLWithPath: "/usr/sbin/system_profiler")
-            proc.arguments = ["SPBluetoothDataType", "-json", "-timeout", "2"]
+            proc.arguments = ["SPBluetoothDataType", "-json"]
             let pipe = Pipe()
             proc.standardOutput = pipe
             proc.standardError = Pipe()
@@ -51,25 +62,36 @@ actor SystemProfilerBatteryReader {
         }.value
 
         guard let data = json,
-              let parsed = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-              let bt = parsed["SPBluetoothDataType"] as? [[String: Any]] else {
+              let parsed = try? JSONSerialization.jsonObject(with: data),
+              let dict = parsed as? [String: Any],
+              let sections = dict["SPBluetoothDataType"] as? [Any] else {
+            NSLog("[BT] system_profiler parse failed (top-level)")
             return
         }
 
         let now = Date()
-        for section in bt {
-            if let connected = section["device_connected"] as? [[String: [String: Any]]] {
-                for entry in connected {
-                    for (_, info) in entry {
-                        ingest(deviceInfo: info, now: now)
+        var ingested = 0
+
+        for section in sections {
+            guard let sec = section as? [String: Any] else { continue }
+            for key in ["device_connected", "device_not_connected"] {
+                guard let listAny = sec[key] as? [Any] else { continue }
+                for entryAny in listAny {
+                    guard let entry = entryAny as? [String: Any] else { continue }
+                    for (_, infoAny) in entry {
+                        guard let info = infoAny as? [String: Any] else { continue }
+                        if ingest(deviceInfo: info, now: now) { ingested += 1 }
                     }
                 }
             }
         }
+
+        NSLog("[BT] system_profiler ingested \(ingested) device(s); cache size=\(cache.count)")
     }
 
-    private func ingest(deviceInfo info: [String: Any], now: Date) {
-        guard let address = info["device_address"] as? String else { return }
+    @discardableResult
+    private func ingest(deviceInfo info: [String: Any], now: Date) -> Bool {
+        guard let address = info["device_address"] as? String else { return false }
         let key = normalize(address)
 
         let main = batteryInt(info["device_batteryLevelMain"])
@@ -87,6 +109,7 @@ actor SystemProfilerBatteryReader {
         }
 
         cache[key] = CacheEntry(reading: reading, timestamp: now)
+        return true
     }
 
     private func batteryInt(_ raw: Any?) -> Int? {
