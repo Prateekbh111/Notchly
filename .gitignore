@@ -14,15 +14,3 @@ build/
 
 # macOS
 .DS_Store
-
-# Reference / scratch artifacts
-.reference_frames/
-refrence.mov
-reference.mov
-*.mov
-*.mp4
-alcove_*.png
-idle.png
-compact.png
-banner.png
-expanded.png
