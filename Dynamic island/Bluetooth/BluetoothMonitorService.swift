@@ -59,53 +59,32 @@ final class BluetoothMonitorService: NSObject {
         name: String,
         icon: BluetoothIconKind
     ) async {
-        let fastPath: BatteryReadFn = { id, _, _ in
-            await Task.detached(priority: .userInitiated) {
-                IORegistryBatteryReader.read(deviceID: id)
-            }.value
+        let battery = await resolveBattery(mac: mac)
+        await MainActor.run {
+            let payload = BluetoothBannerPayload(
+                deviceID: mac,
+                displayName: name,
+                iconKind: icon,
+                battery: battery
+            )
+            self.hudService?.showBluetoothBanner(payload)
         }
-        let profilerReader = self.profilerReader
-        let fallback: BatteryReadFn = { id, _, _ in
-            await profilerReader.read(deviceID: id)
-        }
+    }
 
-        let composite = CompositeBatteryReader(fastPath: fastPath, fallback: fallback)
+    /// Resolve battery in a single shot — tries IORegistry, then system_profiler,
+    /// then retries system_profiler once after a short delay (bluetoothd race).
+    /// Returns whatever reading is available; falls back to .unknown.
+    private func resolveBattery(mac: String) async -> BatteryReading {
+        let fast = await Task.detached(priority: .userInitiated) {
+            IORegistryBatteryReader.read(deviceID: mac)
+        }.value
+        if fast != .unknown { return fast }
 
-        var lastReading: BatteryReading = .unknown
-        await composite.read(
-            deviceID: mac,
-            vendorID: 0,
-            productID: 0
-        ) { [weak self] reading in
-            lastReading = reading
-            Task { @MainActor [weak self] in
-                let payload = BluetoothBannerPayload(
-                    deviceID: mac,
-                    displayName: name,
-                    iconKind: icon,
-                    battery: reading
-                )
-                self?.hudService?.showBluetoothBanner(payload)
-            }
-        }
+        let firstProfile = await profilerReader.read(deviceID: mac)
+        if firstProfile != .unknown { return firstProfile }
 
-        // Race fallback: bluetoothd publishes battery to system_profiler with a
-        // small delay after pairing. If still unknown, retry once after 1.5s.
-        if lastReading == .unknown {
-            try? await Task.sleep(nanoseconds: 1_500_000_000)
-            let retry = await profilerReader.forceRefresh(deviceID: mac)
-            if retry != .unknown {
-                await MainActor.run {
-                    let payload = BluetoothBannerPayload(
-                        deviceID: mac,
-                        displayName: name,
-                        iconKind: icon,
-                        battery: retry
-                    )
-                    self.hudService?.showBluetoothBanner(payload)
-                }
-            }
-        }
+        try? await Task.sleep(nanoseconds: 1_200_000_000)
+        return await profilerReader.forceRefresh(deviceID: mac)
     }
 
     private func isAudioDevice(_ device: IOBluetoothDevice) -> Bool {
