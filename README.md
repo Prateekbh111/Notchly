@@ -2,6 +2,8 @@
 
 iOS-style Dynamic Island for MacBooks with a hardware notch. Native SwiftUI, runs as a menu-bar app, no internet, no telemetry.
 
+https://github.com/Prateekbh111/Notchly/raw/main/demo.mov
+
 ## Features
 
 - **Now playing** — media artwork, title, artist, scrubber, transport controls. Hovers expand to a full panel; idle compact pill returns automatically.
@@ -10,9 +12,9 @@ iOS-style Dynamic Island for MacBooks with a hardware notch. Native SwiftUI, run
 - **Bluetooth connect banner** — when an audio device (AirPods, Beats, headphones, speakers) connects, the notch shows the device's icon and current battery in a 3-second banner.
 - **Menu-bar toggle** — enable/disable Notchly from the menu bar without quitting the app.
 
-| Idle | Compact (now playing) | Title banner | Expanded |
-|------|------|------|------|
-| ![idle](idle.png) | ![compact](compact.png) | ![banner](banner.png) | ![expanded](expanded.png) |
+| Compact (now playing) | Title banner | Expanded |
+|------|------|------|
+| ![compact](compact.png) | ![banner](banner.png) | ![expanded](expanded.png) |
 
 ## Requirements
 
