@@ -35,15 +35,13 @@ iOS-style Dynamic Island for MacBooks with a hardware notch. Native SwiftUI, run
 git clone <repo-url> notchly
 cd notchly
 xcodebuild \
-  -project "Dynamic island.xcodeproj" \
-  -scheme "Dynamic island" \
+  -project Notchly.xcodeproj \
+  -scheme Notchly \
   -configuration Release \
   build
 ```
 
-The Xcode target name is still "Dynamic island" internally for historical reasons; the produced bundle is `Notchly.app` with bundle ID `Prateek.Notchly`.
-
-Open in Xcode for live preview / debugging.
+Produces `Notchly.app` (bundle ID `Prateek.Notchly`). Open in Xcode for live preview / debugging.
 
 ## Usage
 
@@ -64,7 +62,7 @@ No network access is required or used.
 ## Architecture
 
 ```
-Dynamic island/                 macOS app target (compiled into Notchly.app)
+Notchly/                        macOS app target (compiled into Notchly.app)
 ├── App/
 │   ├── AppDelegate.swift       wires services + window
 │   └── MenuBarController.swift NSStatusItem + enable/disable
@@ -78,7 +76,7 @@ Dynamic island/                 macOS app target (compiled into Notchly.app)
     ├── IORegistryBatteryReader.swift   fast-path battery (IOKit)
     └── SystemProfilerBatteryReader.swift  fallback battery (system_profiler)
 
-DynamicIslandCore/              SPM package — pure Swift, no AppKit/IOBluetooth
+NotchlyCore/                    SPM package — pure Swift, no AppKit/IOBluetooth
 ├── Phase, PhaseReducer         finite-state model
 ├── NowPlayingService           snapshot pipeline from MediaRemote
 ├── TransportController         play/pause/skip
@@ -95,10 +93,10 @@ State flow:
 
 ## Tests
 
-Unit tests live in `DynamicIslandCore/Tests/`:
+Unit tests live in `NotchlyCore/Tests/`:
 
 ```bash
-cd DynamicIslandCore
+cd NotchlyCore
 swift test
 ```
 
