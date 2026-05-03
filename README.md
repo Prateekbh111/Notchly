@@ -2,8 +2,6 @@
 
 iOS-style Dynamic Island for MacBooks with a hardware notch. Native SwiftUI, runs as a menu-bar app, no internet, no telemetry.
 
-![banner](banner.png)
-
 ## Features
 
 - **Now playing** — media artwork, title, artist, scrubber, transport controls. Hovers expand to a full panel; idle compact pill returns automatically.

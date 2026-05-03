@@ -27,7 +27,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		876982D22FA20EB50058C57B /* Dynamic island.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "Notchly.app"; path = Notchly.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		876982D22FA20EB50058C57B /* Notchly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "Notchly.app"; path = Notchly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -62,7 +62,7 @@
 		876982D32FA20EB50058C57B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				876982D22FA20EB50058C57B /* Dynamic island.app */,
+				876982D22FA20EB50058C57B /* Notchly.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -92,7 +92,7 @@
 				A1B2C3D400000000000000E1 /* MediaRemoteAdapter */,
 			);
 			productName = Notchly;
-			productReference = 876982D22FA20EB50058C57B /* Dynamic island.app */;
+			productReference = 876982D22FA20EB50058C57B /* Notchly.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
