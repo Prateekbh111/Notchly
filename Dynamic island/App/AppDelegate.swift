@@ -9,6 +9,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var hover: HoverTracker?
     private var hudService: SystemHUDService?
     private var bluetoothMonitor: BluetoothMonitorService?
+    private var menuBar: MenuBarController?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         guard let screen = NSScreen.screens.first(where: { $0.safeAreaInsets.top > 0 }) else {
@@ -32,7 +33,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             hover: hover,
             hudService: hudService
         )
-        controller.show()
+
+        let menuBar = MenuBarController { [weak controller] enabled in
+            guard let controller else { return }
+            if enabled {
+                controller.show()
+            } else {
+                controller.hide()
+            }
+        }
+        if menuBar.isEnabled {
+            controller.show()
+        }
+        self.menuBar = menuBar
 
         self.nowPlaying = nowPlaying
         self.transport = transport

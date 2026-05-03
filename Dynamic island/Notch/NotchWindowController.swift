@@ -45,6 +45,12 @@ final class NotchWindowController {
         cursorTimer?.cancel()
     }
 
+    func hide() {
+        cursorTimer?.cancel()
+        cursorTimer = nil
+        panel?.orderOut(nil)
+    }
+
     func show() {
         let frame = computeFrame(for: screen)
         let panel = NotchPanel(contentRect: frame)
