@@ -36,14 +36,17 @@ public enum BatteryReading: Equatable, Sendable {
 }
 
 public extension BatteryReading {
+    /// Lowest of left/right buds (in-ear is what user cares about).
+    /// Falls back to case only if both buds are nil.
     var displayLevel: Double? {
         switch self {
         case .single(let n):
             return Double(n) / 100.0
         case .airpods(let l, let r, let c):
-            let vals = [l, r, c].compactMap { $0 }
-            guard let m = vals.min() else { return nil }
-            return Double(m) / 100.0
+            let buds = [l, r].compactMap { $0 }
+            if let m = buds.min() { return Double(m) / 100.0 }
+            if let c { return Double(c) / 100.0 }
+            return nil
         case .unknown:
             return nil
         }
