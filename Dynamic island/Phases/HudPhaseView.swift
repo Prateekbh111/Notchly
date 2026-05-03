@@ -19,11 +19,18 @@ struct HudPhaseView: View {
             Color.clear.frame(width: notchWidth)
 
             rightSlot
-                .frame(width: rightWidth - 20, height: height)
-                .padding(.horizontal, 5)
+                .frame(width: rightSlotWidth, height: height)
+                .padding(.horizontal, rightSlotPadding)
         }
         .frame(width: leftWidth + notchWidth + rightWidth, height: height)
     }
+
+    private var isBluetooth: Bool {
+        if case .bluetooth = state.kind { return true }
+        return false
+    }
+    private var rightSlotWidth: CGFloat { isBluetooth ? rightWidth : rightWidth - 20 }
+    private var rightSlotPadding: CGFloat { isBluetooth ? 0 : 5 }
 
     @ViewBuilder
     private var rightSlot: some View {
@@ -40,8 +47,9 @@ struct HudPhaseView: View {
 
         case .bluetooth(let payload):
             if let level = payload.battery.displayLevel {
+                let ringSize = min(rightWidth, height) - 8
                 BatteryRing(level: level)
-                    .frame(width: 28, height: 28)
+                    .frame(width: ringSize, height: ringSize)
                     .frame(maxWidth: .infinity, alignment: .center)
             } else {
                 Color.clear
