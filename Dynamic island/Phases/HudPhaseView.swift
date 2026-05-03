@@ -97,6 +97,8 @@ private struct BatteryRing: View {
     }
 
     private var ringColor: Color {
-        Color(red: 0.30, green: 0.85, blue: 0.40)
+        if level <= 0.20 { return .red.opacity(0.95) }
+        if level <= 0.40 { return .yellow.opacity(0.95) }
+        return Color(red: 0.30, green: 0.85, blue: 0.40)
     }
 }
