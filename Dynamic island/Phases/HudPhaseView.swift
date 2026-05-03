@@ -1,4 +1,5 @@
 import SwiftUI
+import DynamicIslandCore
 
 struct HudPhaseView: View {
     let state: SystemHUDState
@@ -17,17 +18,35 @@ struct HudPhaseView: View {
 
             Color.clear.frame(width: notchWidth)
 
+            rightSlot
+                .frame(width: rightWidth - 20, height: height)
+                .padding(.horizontal, 5)
+        }
+        .frame(width: leftWidth + notchWidth + rightWidth, height: height)
+    }
+
+    @ViewBuilder
+    private var rightSlot: some View {
+        switch state.kind {
+        case .volume, .brightness:
             ZStack(alignment: .leading) {
                 Capsule().fill(.white.opacity(0.35))
                 Capsule()
                     .fill(.white.opacity(0.9))
-                    .frame(width: (rightWidth-20) * CGFloat(max(0, min(1, state.level))))
+                    .frame(width: (rightWidth - 20) * CGFloat(max(0, min(1, state.level))))
             }
-            .frame(width: rightWidth-20, height: 6)
-            .frame(height: height)
-            .padding(.horizontal, 5)
+            .frame(height: 6)
+            .frame(maxHeight: .infinity)
+
+        case .bluetooth(let payload):
+            if let level = payload.battery.displayLevel {
+                BatteryRing(level: level)
+                    .frame(width: 20, height: 20)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                Color.clear
+            }
         }
-        .frame(width: leftWidth + notchWidth + rightWidth, height: height)
     }
 
     private var iconName: String {
@@ -39,6 +58,47 @@ struct HudPhaseView: View {
             return "speaker.wave.3.fill"
         case .brightness:
             return "sun.max.fill"
+        case .bluetooth(let payload):
+            return symbolName(for: payload.iconKind)
         }
+    }
+
+    private func symbolName(for kind: BluetoothIconKind) -> String {
+        switch kind {
+        case .airpods:            return "airpods"
+        case .airpodsPro:         return "airpods.pro"
+        case .airpodsMax:         return "airpods.max"
+        case .beatsHeadphones:    return "beats.headphones"
+        case .beatsEarbuds:       return "beats.earbuds"
+        case .genericHeadphones:  return "headphones"
+        case .genericSpeaker:     return "hifispeaker.fill"
+        }
+    }
+}
+
+private struct BatteryRing: View {
+    let level: Double
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .stroke(.white.opacity(0.25), lineWidth: 2.5)
+            Circle()
+                .trim(from: 0, to: CGFloat(max(0, min(1, level))))
+                .stroke(
+                    ringColor,
+                    style: StrokeStyle(lineWidth: 2.5, lineCap: .round)
+                )
+                .rotationEffect(.degrees(-90))
+            Text("\(Int(round(level * 100)))")
+                .font(.system(size: 8, weight: .semibold, design: .rounded))
+                .foregroundStyle(.white.opacity(0.95))
+        }
+    }
+
+    private var ringColor: Color {
+        if level <= 0.20 { return .red.opacity(0.95) }
+        if level <= 0.40 { return .yellow.opacity(0.95) }
+        return .white.opacity(0.95)
     }
 }
