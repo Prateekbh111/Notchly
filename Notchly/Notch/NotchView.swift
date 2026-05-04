@@ -140,27 +140,8 @@ struct NotchView: View {
                 }
                 .frame(width: g.width, height: g.height)
                 .offset(x: hudService.hud != nil ? (hudRightWidth - hudLeftWidth) / 2 : 0)
-                .contentShape(
-                    NotchShape(
-                        width: g.width,
-                        height: g.height,
-                        bottomRadius: g.bottomRadius,
-                        topInvertedRadius: g.topInvertedRadius
-                    )
-                )
-                .onHover { isHovered in
-                    hover.setHovered(isHovered)
-                }
-
                 Spacer(minLength: 0)
             }
-
-            Color.clear
-            .frame(width: notchHotspotWidth, height: notchHotspotHeight)
-                .contentShape(Rectangle())
-                .onHover { isHovered in
-                    if isHovered { hover.setHovered(true) }
-                }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .ignoresSafeArea(.all)

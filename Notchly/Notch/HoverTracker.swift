@@ -15,13 +15,13 @@ final class HoverTracker: ObservableObject {
                 NSHapticFeedbackManager.defaultPerformer.perform(.alignment, performanceTime: .now)
             }
         } else {
-            pendingFalse?.cancel()
+            guard pendingFalse == nil else { return }
             let work = DispatchWorkItem { [weak self] in
                 self?.isHovered = false
                 self?.pendingFalse = nil
             }
             pendingFalse = work
-            DispatchQueue.main.asyncAfter(deadline: .now() , execute: work)
+            DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(50), execute: work)
         }
     }
 }

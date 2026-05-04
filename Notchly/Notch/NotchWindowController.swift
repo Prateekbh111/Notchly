@@ -15,8 +15,8 @@ final class NotchWindowController {
     private var screen: NSScreen
 
     private var notchCenterX: CGFloat = 0
+    private var notchSize: CGSize = CGSize(width: 200, height: 32)
     private var hotspotSize: CGSize = .zero
-    private var expandedSize: CGSize = CGSize(width: 360, height: 200)
 
     private var cursorTimer: DispatchSourceTimer?
 
@@ -56,7 +56,7 @@ final class NotchWindowController {
         let panel = NotchPanel(contentRect: frame)
         panel.ignoresMouseEvents = true
 
-        let notchSize: CGSize = {
+        notchSize = {
             if let leftMaxX = screen.auxiliaryTopLeftArea?.maxX,
                let rightMinX = screen.auxiliaryTopRightArea?.minX,
                let topInset = screen.safeAreaInsets.top as CGFloat? {
@@ -119,9 +119,10 @@ final class NotchWindowController {
     private func updateHoverFromCursor() {
         guard let panel else { return }
         let mouse = NSEvent.mouseLocation
-        let onNotchScreen = mouse.x >= screen.frame.minX && mouse.x <= screen.frame.maxX
-                         && mouse.y >= screen.frame.minY && mouse.y <= screen.frame.maxY
-        let inside = onNotchScreen && isCursorInHoverRegion(mouse: mouse, on: screen)
+        let sf = screen.frame
+        let onNotchScreen = mouse.x >= sf.minX && mouse.x <= sf.maxX
+                         && mouse.y >= sf.minY && mouse.y <= sf.maxY
+        let inside = onNotchScreen && isCursorInHoverRegion(mouse: mouse)
         if hover.isHovered != inside {
             hover.setHovered(inside)
         }
@@ -130,20 +131,30 @@ final class NotchWindowController {
         }
     }
 
-    private func isCursorInHoverRegion(mouse: NSPoint, on screen: NSScreen) -> Bool {
+    // Trigger region matches current visual phase size — idle uses notch
+    // hardware bounds, compact/titleBanner use their pill sizes, expanded
+    // uses full expanded pill. Cursor must stay within current state bounds
+    // to remain hovered; exit collapses back to previous state.
+    private func isCursorInHoverRegion(mouse: NSPoint) -> Bool {
         let topY = screen.frame.maxY
-        let centerX: CGFloat
-        if let leftMaxX = screen.auxiliaryTopLeftArea?.maxX,
-           let rightMinX = screen.auxiliaryTopRightArea?.minX {
-            centerX = (leftMaxX + rightMinX) / 2
-        } else {
-            centerX = screen.frame.midX
+        let centerX = notchCenterX
+        let phase = PhaseReducer.reduce(
+            hovered: hover.isHovered,
+            hasMedia: nowPlaying.hasMedia,
+            recentChange: nowPlaying.recentChange(now: Date())
+        )
+        let size: CGSize
+        switch phase {
+        case .idle:
+            size = CGSize(width: notchSize.width, height: notchSize.height)
+        case .compact:
+            size = CGSize(width: 257, height: notchSize.height)
+        case .titleBanner:
+            size = CGSize(width: 257, height: 60)
+        case .expanded:
+            size = CGSize(width: 345, height: 174)
         }
-        let size = hover.isHovered ? expandedSize : hotspotSize
         let halfW = size.width / 2
-        // Open-top check: any cursor above bottomY and within horizontal band
-        // counts. Catches cursor pegged at top edge (y == topY) and slight
-        // overshoots from fast moves.
         let bottomY = topY - size.height
         return mouse.y >= bottomY && abs(mouse.x - centerX) <= halfW
     }
