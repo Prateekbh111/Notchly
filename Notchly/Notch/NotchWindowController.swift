@@ -119,10 +119,7 @@ final class NotchWindowController {
     private func updateHoverFromCursor() {
         guard let panel else { return }
         let mouse = NSEvent.mouseLocation
-        let activeScreen = NSScreen.screens.first(where: { $0.frame.contains(mouse) })
-            ?? NSScreen.screens.first(where: { $0.frame.maxY >= mouse.y })
-            ?? screen
-        let inside = isCursorInHoverRegion(mouse: mouse, on: activeScreen)
+        let inside = screen.frame.contains(mouse) && isCursorInHoverRegion(mouse: mouse, on: screen)
         if hover.isHovered != inside {
             hover.setHovered(inside)
         }

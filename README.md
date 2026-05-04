@@ -24,7 +24,7 @@ iOS-style Dynamic Island for MacBooks with a hardware notch. Native SwiftUI, run
 
 ## Install (pre-built zip)
 
-**Download:** [Notchly-2026-05-03.zip](https://github.com/Prateekbh111/Notchly/raw/main/dist/Notchly-2026-05-03.zip)
+**Download:** [Notchly-2026-05-04.zip](https://github.com/Prateekbh111/Notchly/raw/main/dist/Notchly-2026-05-04.zip)
 
 1. Unzip to `/Applications`.
 2. First launch: right-click `Notchly.app` → **Open** to bypass Gatekeeper (binary is ad-hoc signed only).
