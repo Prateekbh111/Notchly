@@ -117,6 +117,14 @@ Coverage:
 
 These were generated during brainstorming and execution; useful as design history when extending the app.
 
+## ⚠️ Important: Removing Accessibility Permission While Running
+
+If Notchly is running and you remove its Accessibility permission (System Settings → Privacy & Security → Accessibility), the app may freeze and become unresponsive. **Always quit Notchly before revoking Accessibility access.** If the app is already stuck, kill it from Terminal:
+
+```bash
+pkill -x Notchly
+```
+
 ## Known limitations
 
 - Multi-display: the panel attaches to the primary screen with a notch. Hot-plugging an external display while running may require relaunch.
